@@ -1,0 +1,67 @@
+{
+  "global_config": {
+    "category_lock_pwd": null
+  },
+  "category": [
+    {
+      "name": "证件",
+      "alias": "Documents",
+      "description": "身份证、护照等居民证件",
+      "id": "0-built-in-cannot-be-removed",
+      "rank": 0,
+      "removable": false,
+      "renameable": false,
+      "lock": false
+    },
+    {
+      "name": "银行卡",
+      "alias": "Bank cards",
+      "description": "银行类的储蓄卡、信用卡等",
+      "id": "1-built-in-cannot-be-removed",
+      "rank": 1,
+      "removable": false,
+      "renameable": false,
+      "lock": false
+    },
+    {
+      "name": "Web网站",
+      "alias": "Websites",
+      "description": "需要用户名和密码的网站",
+      "id": "2-built-in-cannot-be-removed",
+      "rank": 2,
+      "removable": false,
+      "renameable": false,
+      "lock": false
+    },
+    {
+      "name": "应用程序",
+      "alias": "Software",
+      "description": "需要用户名和密码的应用程序",
+      "id": "3-built-in-can-removed",
+      "rank": 3,
+      "removable": true,
+      "renameable": true,
+      "lock": false
+    },
+    {
+      "name": "其余",
+      "alias": "Other",
+      "description": "暂未归类的账户信息",
+      "id": "4-built-in-can-removed",
+      "rank": 3,
+      "removable": true,
+      "renameable": true,
+      "lock": false
+    }
+  ],
+  "data": [
+    {
+      "name": "作者网站",
+      "account_name": "blue sky",
+      "password": "42",
+      "site": "https://www.reminisce.top",
+      "remark": "这是一个内置的账号信息，可删除。在你第一次安装程序时已经存在。",
+      "category_id": "2-built-in-cannot-be-removed"
+    }
+  ]
+}

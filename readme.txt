@@ -1,0 +1,13 @@
+//// example command
+
+// 打包成apk：
+D:\GoEnv\gopath\bin\fyne.exe package -os android -appID top.example.rem -icon ./static/20230714220531.png
+
+// 打包成当前系统可执行文件，如exe：
+D:\GoEnv\gopath\bin\fyne.exe install -icon ./static/20230714220531.png
+
+// 捆绑资源文件：
+D:\GoEnv\gopath\bin\fyne.exe bundle -o bundled.go ./static/font/STXINWEI.TTF
+
+// 运行示例demo：
+go run fyne.io/fyne/v2/cmd/fyne_demo@latest
