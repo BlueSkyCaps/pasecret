@@ -1,18 +1,23 @@
 package main
 
 import (
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/widget"
 	"pasecret/core/config"
+	"pasecret/core/ui"
 )
 
-func main() {
-	a := app.New()
+var w fyne.Window
+var a fyne.App
+
+func init() {
+	a = app.NewWithID("top.reminisce.test")
 	t := &config.DefaultChineseFontTheme{}
 	t.SetFonts("STXINWEI.TTF", resourceSTXINWEITTF.StaticContent)
 	a.Settings().SetTheme(t)
-	w := a.NewWindow("Pasecret")
-
-	w.SetContent(widget.NewLabel("pasecret 世界!"))
-	w.ShowAndRun()
+	w = a.NewWindow("Pasecret")
+	w.SetMaster()
+}
+func main() {
+	ui.Run(w, a)
 }

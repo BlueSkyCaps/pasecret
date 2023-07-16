@@ -1,4 +1,3 @@
-// Package config DefaultChineseFontTheme 配置支持中文字体 避免乱码
 package config
 
 import (
@@ -7,6 +6,7 @@ import (
 	"image/color"
 )
 
+// DefaultChineseFontTheme 配置支持中文字体 避免乱码
 type DefaultChineseFontTheme struct {
 	regular, bold, italic, boldItalic, monospace fyne.Resource
 }
