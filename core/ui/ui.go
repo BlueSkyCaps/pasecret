@@ -23,6 +23,7 @@ func firstAddTabs(w fyne.Window, a fyne.App) {
 			w3.SetContent(widget.NewButton("确定", func() {
 				w3.Close()
 			}))
+
 			w3.Show()
 		})),
 	)

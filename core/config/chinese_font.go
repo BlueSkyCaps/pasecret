@@ -3,23 +3,39 @@ package config
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
+	"golang.org/x/image/colornames"
 	"image/color"
 )
 
-// DefaultChineseFontTheme 配置支持中文字体 避免乱码
-type DefaultChineseFontTheme struct {
+// DefaultGlobalSettingTheme 全局配置支持中文字体，避免乱码，以及一些个性化主题颜色等
+type DefaultGlobalSettingTheme struct {
 	regular, bold, italic, boldItalic, monospace fyne.Resource
 }
 
-func (t *DefaultChineseFontTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
+// Color Theme接口必须实现的方法
+func (t *DefaultGlobalSettingTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
+	// 设置全局主题主调色-淡绿
+	if name == theme.ColorNamePrimary {
+		return color.RGBA{R: 0, G: 128, B: 0, A: 255}
+	}
+	// 设置全局鼠标滑入显示的颜色
+	if name == theme.ColorNameHover {
+		return colornames.Aliceblue
+	}
+	// 设置全局点击时显示的颜色
+	if name == theme.ColorNamePressed {
+		return colornames.Lightblue
+	}
 	return theme.DefaultTheme().Color(name, variant)
 }
 
-func (t *DefaultChineseFontTheme) Icon(name fyne.ThemeIconName) fyne.Resource {
+// Icon Theme接口必须实现的方法
+func (t *DefaultGlobalSettingTheme) Icon(name fyne.ThemeIconName) fyne.Resource {
 	return theme.DefaultTheme().Icon(name)
 }
 
-func (m *DefaultChineseFontTheme) Font(style fyne.TextStyle) fyne.Resource {
+// Font Theme接口必须实现的方法
+func (m *DefaultGlobalSettingTheme) Font(style fyne.TextStyle) fyne.Resource {
 	if style.Monospace {
 		return m.monospace
 	}
@@ -35,11 +51,13 @@ func (m *DefaultChineseFontTheme) Font(style fyne.TextStyle) fyne.Resource {
 	return m.regular
 }
 
-func (m *DefaultChineseFontTheme) Size(name fyne.ThemeSizeName) float32 {
+// Size Theme接口必须实现的方法
+func (m *DefaultGlobalSettingTheme) Size(name fyne.ThemeSizeName) float32 {
 	return theme.DefaultTheme().Size(name)
 }
 
-func (t *DefaultChineseFontTheme) SetFonts(staticName string, staticContent []byte) {
+// SetFonts 主动更改默认字体，若不调用次函数，字体不会更改。
+func (t *DefaultGlobalSettingTheme) SetFonts(staticName string, staticContent []byte) {
 	t.regular = theme.TextFont()
 	t.bold = theme.TextBoldFont()
 	t.italic = theme.TextItalicFont()
