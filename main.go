@@ -18,6 +18,10 @@ func init() {
 	a.Settings().SetTheme(t)
 	w = a.NewWindow("Pasecret")
 	w.SetMaster()
+	if !fyne.CurrentDevice().IsMobile() {
+		w.Resize(fyne.Size{Height: 500, Width: 650})
+	}
+
 }
 func main() {
 	ui.Run(w, a)

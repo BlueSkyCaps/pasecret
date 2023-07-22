@@ -56,7 +56,7 @@ func (m *DefaultGlobalSettingTheme) Size(name fyne.ThemeSizeName) float32 {
 	return theme.DefaultTheme().Size(name)
 }
 
-// SetFonts 主动更改默认字体，若不调用次函数，字体不会更改。
+// SetFonts 主动更改默认字体，若不调用此函数，字体不会更改。
 func (t *DefaultGlobalSettingTheme) SetFonts(staticName string, staticContent []byte) {
 	t.regular = theme.TextFont()
 	t.bold = theme.TextBoldFont()
