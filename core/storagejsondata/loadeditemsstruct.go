@@ -6,14 +6,7 @@ type LoadedItems struct {
 		SyncBranch      int         `json:"sync_branch"`
 	} `json:"global_config"`
 	Category []Category `json:"category"`
-	Data     []struct {
-		Name        string `json:"name"`
-		AccountName string `json:"account_name"`
-		Password    string `json:"password"`
-		Site        string `json:"site"`
-		Remark      string `json:"remark"`
-		CategoryId  string `json:"category_id"`
-	} `json:"data"`
+	Data     []Data     `json:"data"`
 }
 type Category struct {
 	Name        string `json:"name"`
@@ -23,4 +16,12 @@ type Category struct {
 	Rank        int    `json:"rank"`
 	Removable   bool   `json:"removable"`
 	Renameable  bool   `json:"renameable"`
+}
+type Data struct {
+	Name        string `json:"name"`
+	AccountName string `json:"account_name"`
+	Password    string `json:"password"`
+	Site        string `json:"site"`
+	Remark      string `json:"remark"`
+	CategoryId  string `json:"category_id"`
 }

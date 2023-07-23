@@ -26,5 +26,6 @@ func init() {
 func main() {
 	loadedItems := storagejsondata.LoadInit(appRef, resourceDJson.StaticContent)
 	appRef.LoadedItems = loadedItems
-	ui.Run(appRef)
+	storagejsondata.AppRef = appRef
+	ui.Run()
 }

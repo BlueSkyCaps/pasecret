@@ -40,6 +40,25 @@ func CreateFile(path string, data []byte) (bool, error) {
 	return true, nil
 }
 
+// WriteExistedFile 已有路径文件写入数据
+func WriteExistedFile(path string, data []byte) (bool, error) {
+	// Android必须添加os.O_WRONLY，否则报"bad file descriptor"权限问题
+	create, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY, os.ModePerm)
+	if err != nil {
+		return false, err
+	}
+	_, err = create.Write(data)
+	if err != nil {
+		create.Close()
+		return false, err
+	}
+	err = create.Close()
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // ReadFileAsString 从路径文件读全部数据，字符串形式
 func ReadFileAsString(path string) (bool, string, error) {
 	b, err := ioutil.ReadFile(path)

@@ -3,7 +3,6 @@ package config
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
-	"golang.org/x/image/colornames"
 	"image/color"
 )
 
@@ -20,11 +19,11 @@ func (t *DefaultGlobalSettingTheme) Color(name fyne.ThemeColorName, variant fyne
 	}
 	// 设置全局鼠标滑入显示的颜色
 	if name == theme.ColorNameHover {
-		return colornames.Aliceblue
+		return color.RGBA{R: 101, G: 140, B: 111, A: 255}
 	}
 	// 设置全局点击时显示的颜色
 	if name == theme.ColorNamePressed {
-		return colornames.Lightblue
+		return color.RGBA{R: 101, G: 140, B: 111, A: 255}
 	}
 	return theme.DefaultTheme().Color(name, variant)
 }

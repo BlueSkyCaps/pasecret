@@ -46,6 +46,6 @@ func testStorage() {
 	v := string(b)
 	dialog.ShowInformation("", string(v), w)
 	dialog.ShowInformation("", a.Storage().RootURI().Path(), w)
-	ui.Run(w, a)
+	ui.Run()
 
 }
