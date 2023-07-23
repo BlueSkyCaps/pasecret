@@ -45,7 +45,7 @@
       "alias": "Other",
       "description": "暂未归类的账户信息",
       "id": "4-built-in-can-removed",
-      "rank": 3,
+      "rank": 4,
       "removable": true,
       "renameable": true
     }

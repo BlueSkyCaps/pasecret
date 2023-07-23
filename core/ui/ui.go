@@ -51,7 +51,7 @@ func loadItems() []fyne.CanvasObject {
 			currentCart := createCurrentCart(storagejsondata.AppRef.LoadedItems.Category[i])
 			cardItemsF = append(cardItemsF, currentCart)
 		}(i, &wg)
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 10)
 	}
 	wg.Wait()
 	return cardItemsF
@@ -73,7 +73,7 @@ func createCurrentCart(ci storagejsondata.Category) *widget.Card {
 				dialog.ShowInformation("提示", "该归类不可被编辑。", storagejsondata.AppRef.W)
 				return
 			}
-			ShowCategoryEditWin(ci)
+			ShowCategoryEditWin(ci, card)
 		}),
 		widget.NewToolbarAction(theme.DeleteIcon(), func() {
 			if !ci.Removable {
@@ -83,8 +83,9 @@ func createCurrentCart(ci storagejsondata.Category) *widget.Card {
 			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除‘%s’？该归类保存的所有密码一并会被删除。", ci.Name),
 				func(b bool) {
 					if b {
-						storagejsondata.DeleteCategory(ci, card)
-						dialog.ShowInformation("提示", "删了。", storagejsondata.AppRef.W)
+						go func() {
+							storagejsondata.DeleteCategory(ci, card)
+						}()
 						return
 					}
 				}, storagejsondata.AppRef.W)

@@ -7,14 +7,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"path"
+	"sort"
 )
 
 var AppRef AppStructRef
 var stoDPath string
-var loadedItems LoadedItems
 
-func LoadInit(appRef AppStructRef, data []byte) LoadedItems {
-	AppRef = appRef
+func LoadInit(data []byte) {
 	stoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
 	existed := common.Existed(AppRef.A.Storage().RootURI().Path())
 	// 若RootURI目录不存在，则先创建目录（目前是在Android端必须先创建，因为不存在/data/user/0/top.reminisce.xxx/files/fyne）
@@ -33,35 +32,63 @@ func LoadInit(appRef AppStructRef, data []byte) LoadedItems {
 			dialog.NewInformation("err", "storage loadInit, CreateFile:"+err.Error(), AppRef.W).Show()
 		}
 	}
-	return load(stoDPath, AppRef)
+	load(stoDPath)
 }
 
 // 从本地存储库d.json加载密码数据
-func load(stoDPath string, AppRef AppStructRef) LoadedItems {
+func load(stoDPath string) {
 	r, bs, err := common.ReadFileAsBytes(stoDPath)
 	if !r {
 		dialog.NewInformation("err", "storage load, ReadFileAsString:"+err.Error(), AppRef.W).Show()
 	}
-	err = json.Unmarshal(bs, &loadedItems)
+	err = json.Unmarshal(bs, &AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "storage load, json.Marshal d:"+err.Error(), AppRef.W).Show()
 	}
-	println(bs)
+	sortCategory()
 	dialog.ShowInformation("", AppRef.A.Storage().RootURI().Path(), AppRef.W)
-	return loadedItems
+}
+
+// EditCategory 编辑保存一个归类文件夹
+func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
+	var newCategory []Category
+	for _, ci := range AppRef.LoadedItems.Category {
+		if ci.Id == editCi.Id {
+			ci.Name = e.Name
+			ci.Alias = e.Alias
+			ci.Description = e.Description
+		}
+		newCategory = append(newCategory, ci)
+	}
+	AppRef.LoadedItems.Category = newCategory
+	sortCategory()
+	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
+	if err != nil {
+		dialog.NewInformation("err", "EditCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
+		return
+	}
+	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	if !r {
+		dialog.NewInformation("err", "EditCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
+		return
+	}
+	// 成功保存本地存储库后再刷新Cart文件夹小部件，避免本地保存失败却事先更新Card小部件文本
+	AppRef.RepaintCartsByEdit(e, editCard)
+	return
 }
 
 // DeleteCategory 删除一个归类文件夹
 func DeleteCategory(delCi Category, delCard *widget.Card) {
 	var newCategory []Category
-	for _, ci := range loadedItems.Category {
+	for _, ci := range AppRef.LoadedItems.Category {
 		if ci.Id != delCi.Id {
 			newCategory = append(newCategory, ci)
 		}
 	}
-	loadedItems.Category = newCategory
+	AppRef.LoadedItems.Category = newCategory
 	deleteCategoryRelated(delCi)
-	marshalDJson, err := json.Marshal(loadedItems)
+	sortCategory()
+	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "DeleteCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return
@@ -71,17 +98,24 @@ func DeleteCategory(delCi Category, delCard *widget.Card) {
 		dialog.NewInformation("err", "DeleteCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
 	}
-	AppRef.RepaintCarts(delCard)
+	AppRef.RepaintCartsByRemove(delCard)
 	return
 }
 
 // 删除一个归类文件夹下的所有密码项
 func deleteCategoryRelated(delCi Category) {
 	var newData []Data
-	for _, da := range loadedItems.Data {
+	for _, da := range AppRef.LoadedItems.Data {
 		if da.CategoryId != delCi.Id {
 			newData = append(newData, da)
 		}
 	}
-	loadedItems.Data = newData
+	AppRef.LoadedItems.Data = newData
+}
+
+// 按原有Rank顺序排序
+func sortCategory() {
+	sort.Slice(AppRef.LoadedItems.Category, func(i, j int) bool {
+		return AppRef.LoadedItems.Category[i].Rank < AppRef.LoadedItems.Category[i].Rank
+	})
 }

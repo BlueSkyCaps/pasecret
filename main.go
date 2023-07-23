@@ -8,24 +8,20 @@ import (
 	"pasecret/core/ui"
 )
 
-var appRef storagejsondata.AppStructRef
-
 func init() {
-	appRef.A = app.NewWithID("top.reminisce.test")
+	storagejsondata.AppRef.A = app.NewWithID("top.reminisce.test")
 	t := &config.DefaultGlobalSettingTheme{}
 	t.SetFonts("STXINWEI.TTF", resourceSTXINWEITTF.StaticContent)
 	// 更新主题，让fyne使用自定义主题配置
-	appRef.A.Settings().SetTheme(t)
-	appRef.W = appRef.A.NewWindow("Pasecret")
-	appRef.W.SetMaster()
+	storagejsondata.AppRef.A.Settings().SetTheme(t)
+	storagejsondata.AppRef.W = storagejsondata.AppRef.A.NewWindow("Pasecret")
+	storagejsondata.AppRef.W.SetMaster()
 	if !fyne.CurrentDevice().IsMobile() {
-		appRef.W.Resize(fyne.Size{Height: 500, Width: 650})
+		storagejsondata.AppRef.W.Resize(fyne.Size{Height: 500, Width: 650})
 	}
 }
 
 func main() {
-	loadedItems := storagejsondata.LoadInit(appRef, resourceDJson.StaticContent)
-	appRef.LoadedItems = loadedItems
-	storagejsondata.AppRef = appRef
+	storagejsondata.LoadInit(resourceDJson.StaticContent)
 	ui.Run()
 }

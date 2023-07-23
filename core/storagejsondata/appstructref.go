@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"pasecret/core/common"
 )
 
 // AppStructRef App操作句柄
@@ -16,8 +17,16 @@ type AppStructRef struct {
 	CardsGrid   *fyne.Container
 }
 
-func (appRef AppStructRef) RepaintCarts(delCard *widget.Card) {
-	dialog.ShowInformation("", "RepaintCarts", appRef.W)
+func (appRef AppStructRef) RepaintCartsByRemove(delCard *widget.Card) {
+	dialog.ShowInformation("", "RepaintCartsByRemove", appRef.W)
 	appRef.CardsGrid.Remove(delCard)
+	appRef.CardsGrid.Refresh()
+}
+
+// RepaintCartsByEdit 成功保存本地存储库后再刷新Cart文件夹小部件
+func (appRef AppStructRef) RepaintCartsByEdit(e *common.EditForm, editCard *widget.Card) {
+	editCard.Title = e.Name
+	editCard.Subtitle = e.Description
+	dialog.ShowInformation("", "RepaintCartsByEdit", appRef.W)
 	appRef.CardsGrid.Refresh()
 }

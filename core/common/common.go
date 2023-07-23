@@ -4,6 +4,7 @@ package common
 import (
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // Existed 目录或文件是否存在
@@ -75,4 +76,15 @@ func ReadFileAsBytes(path string) (bool, []byte, error) {
 		return false, nil, err
 	}
 	return true, b, nil
+}
+
+type EditForm struct {
+	Name        string
+	Alias       string
+	Description string
+}
+
+func IsWhiteAndSpace(s string) bool {
+	return strings.TrimSpace(s) == ""
+
 }
