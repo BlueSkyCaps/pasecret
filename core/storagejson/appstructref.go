@@ -43,18 +43,22 @@ func (appRef AppStructRef) RepaintCartsByAdd(addCi Category, addCard *widget.Car
 }
 
 // RepaintDataListByEdit 成功保存本地存储库后再刷新List密码项列表，避免本地保存失败却事先更新列表
-func (appRef AppStructRef) RepaintDataListByEdit(performDataOrg *Data, cidOrg string) {
+func (appRef AppStructRef) RepaintDataListByEdit(cidOrg string) {
 	// 获取此文件夹的密码项 最新数据
 	relatedData := GetRelatedDataByCid(cidOrg)
+	appRef.DataList.Length = func() int {
+		return len(*relatedData)
+	}
+	appRef.DataList.CreateItem = func() fyne.CanvasObject {
+		return widget.NewButton("", func() {})
+	}
 	// 重新定义List更新回调函数 然后刷新
 	appRef.DataList.UpdateItem = func(i widget.ListItemID, o fyne.CanvasObject) {
 		o.(*widget.Button).SetText((*relatedData)[i].Name)
 		o.(*widget.Button).OnTapped = func() {
-			AppRef.ShowDataEditWinFunc(performDataOrg, cidOrg)
+			// 根据回调函数提供的索引i，就是对应relatedData的当前点击项的顺序
+			AppRef.ShowDataEditWinFunc(&(*relatedData)[i], cidOrg)
 		}
-	}
-	appRef.DataList.Length = func() int {
-		return len(*relatedData)
 	}
 	appRef.DataList.Refresh()
 }

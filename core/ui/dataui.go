@@ -47,7 +47,7 @@ func ShowDataList(ci storagejson.Category) {
 	content := container.NewBorder(topHBox, bottomHBox, nil, nil, list)
 	dataW.SetContent(content)
 	if !fyne.CurrentDevice().IsMobile() {
-		dataW.Resize(fyne.Size{Width: 200, Height: 350})
+		dataW.Resize(fyne.Size{Width: 400, Height: 450})
 	}
 	dataW.CenterOnScreen()
 	dataW.Show()

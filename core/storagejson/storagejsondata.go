@@ -19,8 +19,9 @@ func GetRelatedDataByCid(cid string) *[]Data {
 }
 
 // EditData 编辑保存一个密码项，包括新增
-func EditData(theData Data, isEditOp bool, performDataOrg *Data, cidOrg string) {
+func EditData(theData Data, isEditOp bool, cidOrg string) {
 	if isEditOp {
+		var newData []Data
 		// 编辑则更新AppRef中的此密码项
 		for _, d := range AppRef.LoadedItems.Data {
 			if d.Id == theData.Id {
@@ -30,7 +31,10 @@ func EditData(theData Data, isEditOp bool, performDataOrg *Data, cidOrg string) 
 				d.AccountName = theData.AccountName
 				d.Remark = theData.Remark
 			}
+			newData = append(newData, d)
 		}
+		AppRef.LoadedItems.Data = newData
+
 	} else {
 		// 新增则往里面追加
 		AppRef.LoadedItems.Data = append(AppRef.LoadedItems.Data, theData)
@@ -46,6 +50,6 @@ func EditData(theData Data, isEditOp bool, performDataOrg *Data, cidOrg string) 
 		return
 	}
 	// 成功保存本地存储库后再刷新List密码项列表，避免本地保存失败却事先更新列表
-	AppRef.RepaintDataListByEdit(performDataOrg, cidOrg)
+	AppRef.RepaintDataListByEdit(cidOrg)
 	return
 }
