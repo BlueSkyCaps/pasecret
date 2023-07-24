@@ -10,14 +10,14 @@ import (
 )
 
 // ShowCategoryInfoWin 点击了某归类文件夹Card的info按钮，显示此具体详情窗口
-func ShowCategoryInfoWin(ci storagejsondata.Category) {
-	var realCi storagejsondata.Category
-	for _, nci := range storagejsondata.AppRef.LoadedItems.Category {
+func ShowCategoryInfoWin(ci storagejson.Category) {
+	var realCi storagejson.Category
+	for _, nci := range storagejson.AppRef.LoadedItems.Category {
 		if nci.Id == ci.Id {
 			realCi = nci
 		}
 	}
-	infoW := storagejsondata.AppRef.A.NewWindow("详情")
+	infoW := storagejson.AppRef.A.NewWindow("详情")
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	vBox.Add(canvas.NewText(realCi.Name, colornames.Darkblue))

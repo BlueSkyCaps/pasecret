@@ -1,4 +1,4 @@
-package storagejsondata
+package storagejson
 
 type LoadedItems struct {
 	GlobalConfig struct {

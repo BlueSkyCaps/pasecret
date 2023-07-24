@@ -11,7 +11,7 @@ import (
 
 // ShowCategoryAddWin 首页点击了添加按钮，添加新归类夹
 func ShowCategoryAddWin() {
-	addW := storagejsondata.AppRef.A.NewWindow("编辑归类")
+	addW := storagejson.AppRef.A.NewWindow("编辑归类")
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
@@ -44,16 +44,16 @@ func ShowCategoryAddWin() {
 
 func AddConfirm(e *common.EditForm) {
 	if common.IsWhiteAndSpace(e.Name) {
-		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejsondata.AppRef.W)
+		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejson.AppRef.W)
 		return
 	}
 	// 先成功新增到本地存储库
-	addCi := storagejsondata.AddCategory(e)
+	addCi := storagejson.AddCategory(e)
 	if addCi == nil {
 		return
 	}
 	// 再根据Category对象创建引用Cart小部件
 	cart := CreateCurrentCart(*addCi)
 	// 最后更新当前Cart小部件布局
-	storagejsondata.AppRef.RepaintCartsByAdd(*addCi, cart)
+	storagejson.AppRef.RepaintCartsByAdd(*addCi, cart)
 }

@@ -1,4 +1,4 @@
-package storagejsondata
+package storagejson
 
 import (
 	"fyne.io/fyne/v2"

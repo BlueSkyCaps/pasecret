@@ -11,7 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
-	"pasecret/core/storagejsondata"
+	storagejson "pasecret/core/storagejsondata"
 	"sync"
 	"time"
 )
@@ -27,7 +27,7 @@ func Run() {
 	// 加载密码归类文件夹项到网格容器
 	grid.Objects = loadItems()
 	// 将具有密码归类文件夹项的网格容器指向AppRef
-	storagejsondata.AppRef.CardsGrid = grid
+	storagejson.AppRef.CardsGrid = grid
 	// 加载网格容器到它的父布局
 	gridParent.Add(grid)
 	// 将工具条和文件夹网格列表放进border，形成垂直布局效果
@@ -35,20 +35,20 @@ func Run() {
 	// 添加tabs选项卡
 	appTabs := firstAddTabs(homeTab)
 	// 设置窗体最终布局内容
-	storagejsondata.AppRef.W.SetContent(appTabs)
-	storagejsondata.AppRef.W.ShowAndRun()
+	storagejson.AppRef.W.SetContent(appTabs)
+	storagejson.AppRef.W.ShowAndRun()
 }
 
 func loadItems() []fyne.CanvasObject {
 	var cardItemsF []fyne.CanvasObject
 	var wg sync.WaitGroup
-	categoryLen := len(storagejsondata.AppRef.LoadedItems.Category)
+	categoryLen := len(storagejson.AppRef.LoadedItems.Category)
 	wg.Add(categoryLen)
 
 	for i := 0; i < categoryLen; i++ {
 		go func(i_ int, wg_ *sync.WaitGroup) {
 			defer wg_.Done()
-			currentCart := CreateCurrentCart(storagejsondata.AppRef.LoadedItems.Category[i])
+			currentCart := CreateCurrentCart(storagejson.AppRef.LoadedItems.Category[i])
 			cardItemsF = append(cardItemsF, currentCart)
 		}(i, &wg)
 		time.Sleep(time.Millisecond * 10)
@@ -57,38 +57,37 @@ func loadItems() []fyne.CanvasObject {
 	return cardItemsF
 }
 
-func CreateCurrentCart(ci storagejsondata.Category) *widget.Card {
+func CreateCurrentCart(ci storagejson.Category) *widget.Card {
 	card := widget.NewCard(ci.Name, ci.Description, canvas.NewText("", color.RGBA{}))
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.ListIcon(), func() {
-
-			dialog.ShowInformation("w", ci.Name, storagejsondata.AppRef.W)
+			ShowDataList(ci)
 		}),
 		widget.NewToolbarAction(theme.InfoIcon(), func() {
 			ShowCategoryInfoWin(ci)
 		}),
 		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
 			if !ci.Renameable {
-				dialog.ShowInformation("提示", "该归类不可被编辑。", storagejsondata.AppRef.W)
+				dialog.ShowInformation("提示", "该归类不可被编辑。", storagejson.AppRef.W)
 				return
 			}
 			ShowCategoryEditWin(ci, card)
 		}),
 		widget.NewToolbarAction(theme.DeleteIcon(), func() {
 			if !ci.Removable {
-				dialog.ShowInformation("提示", "该归类不可被删除。", storagejsondata.AppRef.W)
+				dialog.ShowInformation("提示", "该归类不可被删除。", storagejson.AppRef.W)
 				return
 			}
 			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除‘%s’？该归类保存的所有密码一并会被删除。", ci.Name),
 				func(b bool) {
 					if b {
 						go func() {
-							storagejsondata.DeleteCategory(ci, card)
+							storagejson.DeleteCategory(ci, card)
 						}()
 						return
 					}
-				}, storagejsondata.AppRef.W)
+				}, storagejson.AppRef.W)
 		}),
 	)
 	card.SetContent(toolbar)
@@ -99,7 +98,7 @@ func firstAddTabs(home *fyne.Container) *container.AppTabs {
 	tabs := container.NewAppTabs(
 		container.NewTabItemWithIcon("", theme.HomeIcon(), home),
 		container.NewTabItemWithIcon("", theme.SettingsIcon(), widget.NewButton("Open new", func() {
-			w3 := storagejsondata.AppRef.A.NewWindow("Third")
+			w3 := storagejson.AppRef.A.NewWindow("Third")
 			w3.SetContent(widget.NewButton("确定", func() {
 				w3.Close()
 			}))
@@ -122,11 +121,11 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 }
 
 func createHBox() *fyne.Container {
-	storagejsondata.AppRef.SearchInput = widget.NewEntry()
-	storagejsondata.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
-		dialog.ShowInformation("查找", storagejsondata.AppRef.SearchInput.Text, storagejsondata.AppRef.W)
+	storagejson.AppRef.SearchInput = widget.NewEntry()
+	storagejson.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
+		dialog.ShowInformation("查找", storagejson.AppRef.SearchInput.Text, storagejson.AppRef.W)
 	})
-	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), storagejsondata.AppRef.SearchInput, storagejsondata.AppRef.SearchBtn)
+	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), storagejson.AppRef.SearchInput, storagejson.AppRef.SearchBtn)
 	return vBoxLayout
 }
 

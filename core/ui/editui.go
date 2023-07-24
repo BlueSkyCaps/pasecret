@@ -10,15 +10,15 @@ import (
 )
 
 // ShowCategoryEditWin 点击了某归类文件夹Card的Edit按钮，显示此具体编辑窗口
-func ShowCategoryEditWin(ci storagejsondata.Category, ciCard *widget.Card) {
-	var realCi storagejsondata.Category
+func ShowCategoryEditWin(ci storagejson.Category, ciCard *widget.Card) {
+	var realCi storagejson.Category
 	// 从AppRef中根据id找到文件夹，因为回调函数传的Category参数是最初原始的数据，而AppRef中LoadedItems是实时更新的数据
-	for _, nci := range storagejsondata.AppRef.LoadedItems.Category {
+	for _, nci := range storagejson.AppRef.LoadedItems.Category {
 		if nci.Id == ci.Id {
 			realCi = nci
 		}
 	}
-	editW := storagejsondata.AppRef.A.NewWindow("编辑归类")
+	editW := storagejson.AppRef.A.NewWindow("编辑归类")
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
@@ -52,10 +52,10 @@ func ShowCategoryEditWin(ci storagejsondata.Category, ciCard *widget.Card) {
 	editW.Show()
 }
 
-func editConfirm(e *common.EditForm, realCi storagejsondata.Category, ciCard *widget.Card) {
+func editConfirm(e *common.EditForm, realCi storagejson.Category, ciCard *widget.Card) {
 	if common.IsWhiteAndSpace(e.Name) {
-		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejsondata.AppRef.W)
+		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejson.AppRef.W)
 		return
 	}
-	storagejsondata.EditCategory(e, realCi, ciCard)
+	storagejson.EditCategory(e, realCi, ciCard)
 }
