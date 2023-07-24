@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
-	"pasecret/core/storagejsondata"
+	"pasecret/core/storagejson"
 )
 
 // ShowCategoryAddWin 首页点击了添加按钮，添加新归类夹

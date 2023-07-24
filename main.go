@@ -4,7 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"pasecret/core/config"
-	"pasecret/core/storagejsondata"
+	"pasecret/core/storagejson"
 	"pasecret/core/ui"
 )
 

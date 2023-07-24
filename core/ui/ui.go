@@ -11,7 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
-	storagejson "pasecret/core/storagejsondata"
+	storagejson "pasecret/core/storagejson"
 	"sync"
 	"time"
 )

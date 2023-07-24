@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"golang.org/x/image/colornames"
-	"pasecret/core/storagejsondata"
+	"pasecret/core/storagejson"
 )
 
 // ShowCategoryInfoWin 点击了某归类文件夹Card的info按钮，显示此具体详情窗口

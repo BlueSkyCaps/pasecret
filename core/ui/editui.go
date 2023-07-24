@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
-	"pasecret/core/storagejsondata"
+	"pasecret/core/storagejson"
 )
 
 // ShowCategoryEditWin 点击了某归类文件夹Card的Edit按钮，显示此具体编辑窗口

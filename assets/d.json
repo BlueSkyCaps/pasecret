@@ -57,6 +57,7 @@
       "password": "42",
       "site": "https://www.reminisce.top",
       "remark": "这是一个内置的账号信息，可删除。在你第一次安装程序时已经存在。",
+      "id": 42,
       "category_id": "2-built-in-cannot-be-removed"
     }
   ]
