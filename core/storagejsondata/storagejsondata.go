@@ -3,6 +3,7 @@ package storagejsondata
 
 import (
 	"encoding/json"
+	"fmt"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
@@ -75,6 +76,37 @@ func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
 	// 成功保存本地存储库后再刷新Cart文件夹小部件，避免本地保存失败却事先更新Card小部件文本
 	AppRef.RepaintCartsByEdit(e, editCard)
 	return
+}
+
+// AddCategory 新增一个归类文件夹，但此函数不更新窗口此Cart小部件
+func AddCategory(e *common.EditForm) *Category {
+
+	var addCategory Category
+	addCategory.Name = e.Name
+	addCategory.Alias = e.Alias
+	addCategory.Description = e.Description
+	addCategory.Renameable = true
+	addCategory.Removable = true
+	r, rank := common.GenAscRankId()
+	if !r {
+		dialog.NewInformation("err", "AddCategory, GenAscRankId", AppRef.W).Show()
+		return nil
+	}
+	addCategory.Rank = rank
+	addCategory.Id = fmt.Sprintf("%d-built-in-can-removed", addCategory.Rank)
+	AppRef.LoadedItems.Category = append(AppRef.LoadedItems.Category, addCategory)
+	sortCategory()
+	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
+	if err != nil {
+		dialog.NewInformation("err", "AddCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
+		return nil
+	}
+	r, err = common.WriteExistedFile(stoDPath, marshalDJson)
+	if !r {
+		dialog.NewInformation("err", "AddCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
+		return nil
+	}
+	return &addCategory
 }
 
 // DeleteCategory 删除一个归类文件夹

@@ -48,7 +48,7 @@ func loadItems() []fyne.CanvasObject {
 	for i := 0; i < categoryLen; i++ {
 		go func(i_ int, wg_ *sync.WaitGroup) {
 			defer wg_.Done()
-			currentCart := createCurrentCart(storagejsondata.AppRef.LoadedItems.Category[i])
+			currentCart := CreateCurrentCart(storagejsondata.AppRef.LoadedItems.Category[i])
 			cardItemsF = append(cardItemsF, currentCart)
 		}(i, &wg)
 		time.Sleep(time.Millisecond * 10)
@@ -57,7 +57,7 @@ func loadItems() []fyne.CanvasObject {
 	return cardItemsF
 }
 
-func createCurrentCart(ci storagejsondata.Category) *widget.Card {
+func CreateCurrentCart(ci storagejsondata.Category) *widget.Card {
 	card := widget.NewCard(ci.Name, ci.Description, canvas.NewText("", color.RGBA{}))
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarSpacer(),
@@ -111,10 +111,11 @@ func firstAddTabs(home *fyne.Container) *container.AppTabs {
 	return tabs
 }
 
-func addMenuToolbar() *widget.Toolbar {
+func addCategoryMenuToolbar() *widget.Toolbar {
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(theme.ContentAddIcon(), func() {
-			log.Println("New document")
+			ShowCategoryAddWin()
+			log.Println("add Category")
 		}),
 	)
 	return toolbar
@@ -125,7 +126,7 @@ func createHBox() *fyne.Container {
 	storagejsondata.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
 		dialog.ShowInformation("查找", storagejsondata.AppRef.SearchInput.Text, storagejsondata.AppRef.W)
 	})
-	vBoxLayout := container.NewHBox(addMenuToolbar(), storagejsondata.AppRef.SearchInput, storagejsondata.AppRef.SearchBtn)
+	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), storagejsondata.AppRef.SearchInput, storagejsondata.AppRef.SearchBtn)
 	return vBoxLayout
 }
 

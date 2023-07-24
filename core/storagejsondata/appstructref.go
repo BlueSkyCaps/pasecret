@@ -30,3 +30,12 @@ func (appRef AppStructRef) RepaintCartsByEdit(e *common.EditForm, editCard *widg
 	dialog.ShowInformation("", "RepaintCartsByEdit", appRef.W)
 	appRef.CardsGrid.Refresh()
 }
+
+// RepaintCartsByAdd 成功保存本地存储库后再刷新Cart文件夹小部件
+func (appRef AppStructRef) RepaintCartsByAdd(addCi Category, addCard *widget.Card) {
+	addCard.Title = addCi.Name
+	addCard.Subtitle = addCi.Description
+	dialog.ShowInformation("", "RepaintCartsByEdit", appRef.W)
+	appRef.CardsGrid.Objects = append(appRef.CardsGrid.Objects, addCard)
+	appRef.CardsGrid.Refresh()
+}

@@ -2,9 +2,12 @@
 package common
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // Existed 目录或文件是否存在
@@ -41,7 +44,7 @@ func CreateFile(path string, data []byte) (bool, error) {
 	return true, nil
 }
 
-// WriteExistedFile 已有路径文件写入数据
+// WriteExistedFile 已有路径文件覆盖写入数据
 func WriteExistedFile(path string, data []byte) (bool, error) {
 	// Android必须添加os.O_WRONLY，否则报"bad file descriptor"权限问题
 	create, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY, os.ModePerm)
@@ -76,6 +79,7 @@ func ReadFileAsBytes(path string) (bool, []byte, error) {
 		return false, nil, err
 	}
 	return true, b, nil
+
 }
 
 type EditForm struct {
@@ -86,5 +90,16 @@ type EditForm struct {
 
 func IsWhiteAndSpace(s string) bool {
 	return strings.TrimSpace(s) == ""
+}
 
+// GenAscRankId 根据当前日期生成一个整型数字，用于归类夹升序排序。每次生成的值都比之前生成的要大，最小值基于秒
+func GenAscRankId() (bool, int) {
+	now := time.Now()
+	//调用结构体中的方法：
+	rankS := fmt.Sprintf("%v%v%v%v%v%v", now.Year(), int(now.Month()), now.Day(), now.Hour(), now.Minute(), now.Second())
+	rank, err := strconv.Atoi(rankS)
+	if err != nil {
+		return false, 0
+	}
+	return true, rank
 }
