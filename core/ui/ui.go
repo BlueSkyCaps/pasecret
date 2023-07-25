@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
+	"pasecret/core/common"
 	storagejson "pasecret/core/storagejson"
 	"sync"
 	"time"
@@ -123,7 +124,10 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 func createHBox() *fyne.Container {
 	storagejson.AppRef.SearchInput = widget.NewEntry()
 	storagejson.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
-		dialog.ShowInformation("查找", storagejson.AppRef.SearchInput.Text, storagejson.AppRef.W)
+		if common.IsWhiteAndSpace(storagejson.AppRef.SearchInput.Text) {
+			return
+		}
+		ShowSearchResultWin()
 	})
 	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), storagejson.AppRef.SearchInput, storagejson.AppRef.SearchBtn)
 	return vBoxLayout

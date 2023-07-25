@@ -25,8 +25,6 @@ func ShowCategoryInfoWin(ci storagejson.Category) {
 	vBox.Add(canvas.NewText(realCi.Description, colornames.Darkblue))
 	vBox.Add(widget.NewLabel("Alias："))
 	vBox.Add(canvas.NewText(realCi.Alias, colornames.Darkblue))
-	vBox.Add(widget.NewLabel("存储的密码项："))
-	vBox.Add(canvas.NewText("好多个", colornames.Darkblue))
 	vBox.Add(widget.NewLabel("可被删除："))
 	var re string
 	if realCi.Removable {

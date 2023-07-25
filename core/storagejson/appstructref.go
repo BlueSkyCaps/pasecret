@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
+	"time"
 )
 
 // AppStructRef App操作句柄
@@ -22,24 +23,26 @@ type AppStructRef struct {
 }
 
 func (appRef AppStructRef) RepaintCartsByRemove(delCard *widget.Card) {
-	dialog.ShowInformation("", "RepaintCartsByRemove", appRef.W)
 	appRef.CardsGrid.Remove(delCard)
 	appRef.CardsGrid.Refresh()
 }
 
 // RepaintCartsByEdit 成功保存本地存储库后再刷新Cart文件夹小部件
 func (appRef AppStructRef) RepaintCartsByEdit(e *common.EditForm, editCard *widget.Card) {
-	editCard.Title = e.Name
-	editCard.Subtitle = e.Description
-	dialog.ShowInformation("", "RepaintCartsByEdit", appRef.W)
+	editCard.SetTitle(e.Name)
+	editCard.SetSubTitle(e.Description)
+	dialog.ShowInformation(editCard.Title, editCard.Subtitle, appRef.W)
 	appRef.CardsGrid.Refresh()
+	if fyne.CurrentDevice().IsMobile() {
+		// 安卓端必须添加sleep阻塞一段时间才会重绘Cart文本，但是同理的添加删除Cart却能正常刷新显示
+		time.Sleep(time.Millisecond * 500)
+	}
 }
 
 // RepaintCartsByAdd 成功保存本地存储库后再刷新Cart文件夹小部件
 func (appRef AppStructRef) RepaintCartsByAdd(addCi Category, addCard *widget.Card) {
 	addCard.Title = addCi.Name
 	addCard.Subtitle = addCi.Description
-	dialog.ShowInformation("", "RepaintCartsByEdit", appRef.W)
 	appRef.CardsGrid.Objects = append(appRef.CardsGrid.Objects, addCard)
 	appRef.CardsGrid.Refresh()
 }

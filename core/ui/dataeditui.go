@@ -64,7 +64,7 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 	siteEntry.Text = theData.Site
 	vBox.Add(siteEntry)
 	vBox.Add(widget.NewLabel("备注："))
-	remarkEntry := widget.NewEntry()
+	remarkEntry := widget.NewMultiLineEntry()
 	remarkEntry.Text = theData.Remark
 	vBox.Add(remarkEntry)
 	// 创建水平按钮布局

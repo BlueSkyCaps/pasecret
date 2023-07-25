@@ -9,6 +9,7 @@ import (
 	"pasecret/core/common"
 	"path"
 	"sort"
+	"strings"
 )
 
 var AppRef AppStructRef
@@ -143,6 +144,30 @@ func deleteCategoryRelated(delCi Category) {
 		}
 	}
 	AppRef.LoadedItems.Data = newData
+}
+
+// SearchByKeywordTo 按关键词搜索密码项，返回新的LoadedItems副本供部件展示
+func SearchByKeywordTo(kw string) []common.SearchDataResultViewModel {
+	var vm []common.SearchDataResultViewModel
+	for _, d := range AppRef.LoadedItems.Data {
+		if strings.Contains(d.Name, kw) || strings.Contains(d.Remark, kw) || strings.Contains(d.AccountName, kw) ||
+			strings.Contains(d.Site, kw) {
+			var c common.SearchDataResultViewModel
+			c.VDataAccountName = d.AccountName
+			// 根据CategoryId找归类文件夹名称
+			for _, ci := range AppRef.LoadedItems.Category {
+				if ci.Id == d.CategoryId {
+					c.VDataCategoryName = ci.Name
+				}
+			}
+			c.VDataName = d.Name
+			c.VDataPassword = d.Password
+			c.VDataRemark = d.Remark
+			c.VDataSite = d.Site
+			vm = append(vm, c)
+		}
+	}
+	return vm
 }
 
 // 按原有Rank顺序排序
