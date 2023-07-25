@@ -53,3 +53,26 @@ func EditData(theData Data, isEditOp bool, cidOrg string) {
 	AppRef.RepaintDataListByEdit(cidOrg)
 	return
 }
+
+// DeleteData 删除一个密码项
+func DeleteData(delD Data) {
+	var newData []Data
+	for _, di := range AppRef.LoadedItems.Data {
+		if di.Id != delD.Id {
+			newData = append(newData, di)
+		}
+	}
+	AppRef.LoadedItems.Data = newData
+	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
+	if err != nil {
+		dialog.NewInformation("err", "DeleteData, json.Marshal:"+err.Error(), AppRef.W).Show()
+		return
+	}
+	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	if !r {
+		dialog.NewInformation("err", "DeleteData, WriteExistedFile:"+err.Error(), AppRef.W).Show()
+		return
+	}
+	AppRef.RepaintDataListByEdit(delD.CategoryId)
+	return
+}

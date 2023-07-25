@@ -3,6 +3,7 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/storagejson"
@@ -15,7 +16,11 @@ func ShowDataList(ci storagejson.Category) {
 	dataW := storagejson.AppRef.A.NewWindow(ci.Name)
 	bottomHBox := container.NewHBox()
 	bottomHBox.Add(widget.NewToolbarSpacer().ToolbarObject())
-	bottomHBox.Add(widget.NewButton("返回", func() {
+	lbn := "关闭"
+	if fyne.CurrentDevice().IsMobile() {
+		lbn = "返回"
+	}
+	bottomHBox.Add(widget.NewButton(lbn, func() {
 		dataW.Close()
 	}))
 	topHBox := container.NewHBox()
@@ -29,12 +34,23 @@ func ShowDataList(ci storagejson.Category) {
 			return len(*relatedData)
 		},
 		func() fyne.CanvasObject {
-			return widget.NewButton("", func() {})
+			return container.NewBorder(
+				nil, nil, widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {}), nil,
+				widget.NewButton("", func() {}))
 		},
 		func(i widget.ListItemID, o fyne.CanvasObject) {
-			o.(*widget.Button).SetText((*relatedData)[i].Name)
-			o.(*widget.Button).OnTapped = func() {
+			//Container中位置为0的元素是密码项按钮
+			(o.(*fyne.Container).Objects[0]).(*widget.Button).SetText((*relatedData)[i].Name)
+			(o.(*fyne.Container).Objects[0]).(*widget.Button).OnTapped = func() {
 				showDataEditWin(&(*relatedData)[i], ci.Id)
+			}
+			//Container中位置为1的元素是删除按钮
+			(o.(*fyne.Container).Objects[1]).(*widget.Button).OnTapped = func() {
+				dialog.ShowConfirm("提示", "确定要删除此条记录吗？", func(b bool) {
+					if b {
+						storagejson.DeleteData((*relatedData)[i])
+					}
+				}, storagejson.AppRef.W)
 			}
 		})
 	// 将定义好的密码项List小部件指向AppRef中贮存

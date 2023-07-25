@@ -2,7 +2,9 @@ package storagejson
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 )
@@ -50,14 +52,25 @@ func (appRef AppStructRef) RepaintDataListByEdit(cidOrg string) {
 		return len(*relatedData)
 	}
 	appRef.DataList.CreateItem = func() fyne.CanvasObject {
-		return widget.NewButton("", func() {})
+		return container.NewBorder(
+			nil, nil, widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {}), nil,
+			widget.NewButton("", func() {}))
 	}
 	// 重新定义List更新回调函数 然后刷新
 	appRef.DataList.UpdateItem = func(i widget.ListItemID, o fyne.CanvasObject) {
-		o.(*widget.Button).SetText((*relatedData)[i].Name)
-		o.(*widget.Button).OnTapped = func() {
+		//Container中位置为0的元素是密码项按钮
+		(o.(*fyne.Container).Objects[0]).(*widget.Button).SetText((*relatedData)[i].Name)
+		(o.(*fyne.Container).Objects[0]).(*widget.Button).OnTapped = func() {
 			// 根据回调函数提供的索引i，就是对应relatedData的当前点击项的顺序
 			AppRef.ShowDataEditWinFunc(&(*relatedData)[i], cidOrg)
+		}
+		//Container中位置为1的元素是删除按钮
+		(o.(*fyne.Container).Objects[1]).(*widget.Button).OnTapped = func() {
+			dialog.ShowConfirm("提示", "确定要删除此条记录吗？", func(b bool) {
+				if b {
+					DeleteData((*relatedData)[i])
+				}
+			}, AppRef.W)
 		}
 	}
 	appRef.DataList.Refresh()
