@@ -14,6 +14,8 @@ func ShowDataList(ci storagejson.Category) {
 	// 获取此文件夹的密码项
 	relatedData := storagejson.GetRelatedDataByCid(ci.Id)
 	dataW := storagejson.AppRef.A.NewWindow(ci.Name)
+	// 将密码项列表窗口贮存到AppRef中后续更新小部件的回调函数使用弹窗作为其父窗口
+	storagejson.AppRef.DataListWin = dataW
 	bottomHBox := container.NewHBox()
 	bottomHBox.Add(widget.NewToolbarSpacer().ToolbarObject())
 	lbn := "关闭"
@@ -50,7 +52,7 @@ func ShowDataList(ci storagejson.Category) {
 					if b {
 						storagejson.DeleteData((*relatedData)[i])
 					}
-				}, storagejson.AppRef.W)
+				}, dataW)
 			}
 		})
 	// 将定义好的密码项List小部件指向AppRef中贮存

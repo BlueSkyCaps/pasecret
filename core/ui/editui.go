@@ -38,8 +38,7 @@ func ShowCategoryEditWin(ci storagejson.Category, ciCard *widget.Card) {
 	})
 	editConfirmBtn := widget.NewButton("确定", func() {
 		e := &common.EditForm{Name: nameEntry.Text, Alias: aliasEntry.Text, Description: descriptionEntry.Text}
-		editConfirm(e, realCi, ciCard)
-		editW.Close()
+		editConfirm(e, realCi, ciCard, editW)
 	})
 	editConfirmBtn.Importance = widget.HighImportance
 	hBox := container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
@@ -52,10 +51,11 @@ func ShowCategoryEditWin(ci storagejson.Category, ciCard *widget.Card) {
 	editW.Show()
 }
 
-func editConfirm(e *common.EditForm, realCi storagejson.Category, ciCard *widget.Card) {
+func editConfirm(e *common.EditForm, realCi storagejson.Category, ciCard *widget.Card, editW fyne.Window) {
 	if common.IsWhiteAndSpace(e.Name) {
-		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejson.AppRef.W)
+		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", editW)
 		return
 	}
 	storagejson.EditCategory(e, realCi, ciCard)
+	editW.Close()
 }

@@ -19,6 +19,7 @@ type AppStructRef struct {
 	SearchBtn           *widget.Button
 	CardsGrid           *fyne.Container
 	DataList            *widget.List
+	DataListWin         fyne.Window
 	ShowDataEditWinFunc func(performData *Data, cid string)
 }
 
@@ -31,7 +32,6 @@ func (appRef AppStructRef) RepaintCartsByRemove(delCard *widget.Card) {
 func (appRef AppStructRef) RepaintCartsByEdit(e *common.EditForm, editCard *widget.Card) {
 	editCard.SetTitle(e.Name)
 	editCard.SetSubTitle(e.Description)
-	dialog.ShowInformation(editCard.Title, editCard.Subtitle, appRef.W)
 	appRef.CardsGrid.Refresh()
 	if fyne.CurrentDevice().IsMobile() {
 		// 安卓端必须添加sleep阻塞一段时间才会重绘Cart文本，但是同理的添加删除Cart却能正常刷新显示
@@ -73,7 +73,7 @@ func (appRef AppStructRef) RepaintDataListByEdit(cidOrg string) {
 				if b {
 					DeleteData((*relatedData)[i])
 				}
-			}, AppRef.W)
+			}, AppRef.DataListWin)
 		}
 	}
 	appRef.DataList.Refresh()

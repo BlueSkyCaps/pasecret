@@ -78,7 +78,7 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 		theData.Password = passwordEntry.Text
 		theData.Site = siteEntry.Text
 		theData.Remark = remarkEntry.Text
-		editConfirmData(isEditOp, cidOrg)
+		editConfirmData(isEditOp, cidOrg, editW)
 		editW.Close()
 	})
 	editConfirmBtn.Importance = widget.HighImportance
@@ -92,9 +92,9 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 	editW.Show()
 }
 
-func editConfirmData(isEditOp bool, cidOrg string) {
+func editConfirmData(isEditOp bool, cidOrg string, editW fyne.Window) {
 	if common.IsWhiteAndSpace(theData.Name) {
-		dialog.ShowInformation("提示", "名称不能是空的。", storagejson.AppRef.W)
+		dialog.ShowInformation("提示", "名称不能是空的。", editW)
 		return
 	}
 	storagejson.EditData(theData, isEditOp, cidOrg)
