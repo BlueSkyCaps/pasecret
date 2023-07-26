@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
-	"log"
 	"pasecret/core/common"
 	storagejson "pasecret/core/storagejson"
 	"sync"
@@ -33,8 +32,9 @@ func Run() {
 	gridParent.Add(grid)
 	// 将工具条和文件夹网格列表放进border，形成垂直布局效果
 	homeTab := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
+	settingTab := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
 	// 添加tabs选项卡
-	appTabs := firstAddTabs(homeTab)
+	appTabs := firstAddTabs(homeTab, settingTab)
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
 	storagejson.AppRef.W.ShowAndRun()
@@ -95,17 +95,10 @@ func CreateCurrentCart(ci storagejson.Category) *widget.Card {
 	return card
 }
 
-func firstAddTabs(home *fyne.Container) *container.AppTabs {
+func firstAddTabs(home *fyne.Container, setting *fyne.Container) *container.AppTabs {
 	tabs := container.NewAppTabs(
 		container.NewTabItemWithIcon("", theme.HomeIcon(), home),
-		container.NewTabItemWithIcon("", theme.SettingsIcon(), widget.NewButton("Open new", func() {
-			w3 := storagejson.AppRef.A.NewWindow("Third")
-			w3.SetContent(widget.NewButton("确定", func() {
-				w3.Close()
-			}))
-
-			w3.Show()
-		})),
+		container.NewTabItemWithIcon("", theme.SettingsIcon(), setting),
 	)
 	tabs.SetTabLocation(container.TabLocationBottom)
 	return tabs
@@ -115,7 +108,6 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(theme.ContentAddIcon(), func() {
 			ShowCategoryAddWin()
-			log.Println("add Category")
 		}),
 	)
 	return toolbar

@@ -1,16 +1,33 @@
-package main
+package common
 
 import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io"
-	"pasecret/core/common"
 )
 
-func encrypt(key []byte, plaintext string) (string, error) {
+var appDefaultKeyAES = "theKeyIsJustHereNotUsedOnProduct"
+
+// KeyBytesAES 生成密钥（256位）的字节形式
+func KeyBytesAES(k string) ([]byte, error) {
+	key := []byte(k)
+	if IsWhiteAndSpace(k) {
+		a := appDefaultKeyAES
+		key = []byte(a)
+		return key, nil
+	}
+	if len([]byte(k)) != 32 {
+		return nil, errors.New("bytes size must 32")
+	}
+	return key, nil
+}
+
+// EncryptAES 用AES密钥加密明文生成密文
+func EncryptAES(key []byte, plaintext string) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
@@ -28,7 +45,8 @@ func encrypt(key []byte, plaintext string) (string, error) {
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
 
-func decrypt(key []byte, ciphertext string) (string, error) {
+// DecryptAES 用AES密钥解密密文返回明文
+func DecryptAES(key []byte, ciphertext string) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
@@ -50,31 +68,4 @@ func decrypt(key []byte, ciphertext string) (string, error) {
 	cfb.XORKeyStream(decoded, decoded)
 
 	return string(decoded), nil
-}
-
-func main() {
-	key, err := common.KeyBytesAES(common.AppProductKeyAES)
-	if err != nil {
-		println(err.Error())
-	}
-	// 待加密的数据
-	plaintext := "Hello, AES2222wd是，，，发唧唧复唧唧大约为七点七一缗彂!"
-
-	// 加密数据
-	encrypted, err := encrypt(key, plaintext)
-	if err != nil {
-		fmt.Println("Error encrypting:", err)
-		return
-	}
-
-	// 解密数据
-	decrypted, err := decrypt(key, encrypted)
-	if err != nil {
-		fmt.Println("Error decrypting:", err)
-		return
-	}
-
-	fmt.Println("Original:", plaintext)
-	fmt.Println("Encrypted:", encrypted)
-	fmt.Println("Decrypted:", decrypted)
 }
