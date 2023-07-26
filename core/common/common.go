@@ -113,6 +113,7 @@ type SearchDataResultViewModel struct {
 	VDataRemark      string
 	//VDataId           int
 	VDataCategoryName string
+	VDataCategoryName string
 }
 
 // SearchDataResultHeader 用于关键字搜索密码项展示table位于表头的列明
