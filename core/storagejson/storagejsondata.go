@@ -39,6 +39,7 @@ func EditData(theData Data, isEditOp bool, cidOrg string) {
 		// 新增则往里面追加
 		AppRef.LoadedItems.Data = append(AppRef.LoadedItems.Data, theData)
 	}
+	encryLoadedData()
 	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "EditCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
@@ -49,6 +50,8 @@ func EditData(theData Data, isEditOp bool, cidOrg string) {
 		dialog.NewInformation("err", "EditCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
 	}
+	// 保存完后要解密重新贮存至AppRef
+	decLoadedData()
 	// 成功保存本地存储库后再刷新List密码项列表，避免本地保存失败却事先更新列表
 	AppRef.RepaintDataListByEdit(cidOrg)
 	return
@@ -63,6 +66,7 @@ func DeleteData(delD Data) {
 		}
 	}
 	AppRef.LoadedItems.Data = newData
+	encryLoadedData()
 	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "DeleteData, json.Marshal:"+err.Error(), AppRef.W).Show()
@@ -73,6 +77,8 @@ func DeleteData(delD Data) {
 		dialog.NewInformation("err", "DeleteData, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
 	}
+	// 保存完后要解密重新贮存至AppRef
+	decLoadedData()
 	AppRef.RepaintDataListByEdit(delD.CategoryId)
 	return
 }

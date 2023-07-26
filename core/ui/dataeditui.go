@@ -79,7 +79,6 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 		theData.Site = siteEntry.Text
 		theData.Remark = remarkEntry.Text
 		editConfirmData(isEditOp, cidOrg, editW)
-		editW.Close()
 	})
 	editConfirmBtn.Importance = widget.HighImportance
 	hBox := container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
@@ -98,4 +97,5 @@ func editConfirmData(isEditOp bool, cidOrg string, editW fyne.Window) {
 		return
 	}
 	storagejson.EditData(theData, isEditOp, cidOrg)
+	editW.Close()
 }

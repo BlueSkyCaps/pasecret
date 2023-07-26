@@ -10,6 +10,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"time"
 )
 
 var AppRef AppStructRef
@@ -26,7 +27,7 @@ func LoadInit(data []byte) {
 		}
 	}
 
-	stoDPath := path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
+	stoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
 	// 不存在默认密码数据文件，则创建
 	if !common.Existed(stoDPath) {
 		r, err := common.CreateFile(stoDPath, data)
@@ -47,8 +48,50 @@ func load(stoDPath string) {
 	if err != nil {
 		dialog.NewInformation("err", "storage load, json.Marshal d:"+err.Error(), AppRef.W).Show()
 	}
-	sortCategory()
-	dialog.ShowInformation("", AppRef.A.Storage().RootURI().Path(), AppRef.W)
+	// 解密
+	decLoadedData()
+}
+
+// 解密所有密码项重新贮存AppRef
+func decLoadedData() {
+	var err error
+
+	for i := 0; i < len(AppRef.LoadedItems.Data); i++ {
+		AppRef.LoadedItems.Data[i].Name, err = common.DecryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Name)
+		AppRef.LoadedItems.Data[i].Site, err = common.DecryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Site)
+		AppRef.LoadedItems.Data[i].Remark, err = common.DecryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Remark)
+		AppRef.LoadedItems.Data[i].Password, err = common.DecryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Password)
+		AppRef.LoadedItems.Data[i].AccountName, err = common.DecryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].AccountName)
+	}
+	if err != nil {
+		dialog.ShowInformation("终止", "decLoadedData, common.DecryptAES:"+err.Error(), AppRef.W)
+		time.Sleep(time.Millisecond * 5000)
+		go func() {
+			time.Sleep(time.Millisecond * 4800)
+			AppRef.W.Close()
+		}()
+	}
+}
+
+// 加密所有密码项再保存至本地存储库
+func encryLoadedData() {
+	var err error
+	// 加密所有密码项
+	for i := 0; i < len(AppRef.LoadedItems.Data); i++ {
+		AppRef.LoadedItems.Data[i].Name, err = common.EncryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Name)
+		AppRef.LoadedItems.Data[i].Site, err = common.EncryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Site)
+		AppRef.LoadedItems.Data[i].Remark, err = common.EncryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Remark)
+		AppRef.LoadedItems.Data[i].Password, err = common.EncryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].Password)
+		AppRef.LoadedItems.Data[i].AccountName, err = common.EncryptAES([]byte(common.AppProductKeyAES), AppRef.LoadedItems.Data[i].AccountName)
+	}
+	if err != nil {
+		dialog.ShowInformation("终止", "encryLoadedData, common.EncryptAES:"+err.Error(), AppRef.W)
+		time.Sleep(time.Millisecond * 5000)
+		go func() {
+			time.Sleep(time.Millisecond * 4800)
+			AppRef.W.Close()
+		}()
+	}
 }
 
 // EditCategory 编辑保存一个归类文件夹
@@ -63,7 +106,8 @@ func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
 		newCategory = append(newCategory, ci)
 	}
 	AppRef.LoadedItems.Category = newCategory
-	sortCategory()
+	// 先加密保存
+	encryLoadedData()
 	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "EditCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
@@ -74,6 +118,8 @@ func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
 		dialog.NewInformation("err", "EditCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
 	}
+	// 保存完后要解密重新贮存至AppRef
+	decLoadedData()
 	// 成功保存本地存储库后再刷新Cart文件夹小部件，避免本地保存失败却事先更新Card小部件文本
 	AppRef.RepaintCartsByEdit(e, editCard)
 	return
@@ -81,7 +127,6 @@ func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
 
 // AddCategory 新增一个归类文件夹，但此函数不更新窗口此Cart小部件
 func AddCategory(e *common.EditForm) *Category {
-
 	var addCategory Category
 	addCategory.Name = e.Name
 	addCategory.Alias = e.Alias
@@ -96,7 +141,7 @@ func AddCategory(e *common.EditForm) *Category {
 	addCategory.Rank = rank
 	addCategory.Id = fmt.Sprintf("%d-built-in-can-removed", addCategory.Rank)
 	AppRef.LoadedItems.Category = append(AppRef.LoadedItems.Category, addCategory)
-	sortCategory()
+	encryLoadedData()
 	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "AddCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
@@ -107,6 +152,8 @@ func AddCategory(e *common.EditForm) *Category {
 		dialog.NewInformation("err", "AddCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return nil
 	}
+	// 保存完后要解密重新贮存至AppRef
+	decLoadedData()
 	return &addCategory
 }
 
@@ -120,7 +167,7 @@ func DeleteCategory(delCi Category, delCard *widget.Card) {
 	}
 	AppRef.LoadedItems.Category = newCategory
 	deleteCategoryRelated(delCi)
-	sortCategory()
+	encryLoadedData()
 	marshalDJson, err := json.Marshal(AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "DeleteCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
@@ -131,6 +178,8 @@ func DeleteCategory(delCi Category, delCard *widget.Card) {
 		dialog.NewInformation("err", "DeleteCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
 	}
+	// 保存完后要解密重新贮存至AppRef
+	decLoadedData()
 	AppRef.RepaintCartsByRemove(delCard)
 	return
 }

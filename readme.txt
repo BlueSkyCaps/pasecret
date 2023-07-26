@@ -8,6 +8,8 @@ D:\GoEnv\gopath\bin\fyne.exe install -icon ./assets/20230714220531.png
 
 // 捆绑资源文件：
 D:\GoEnv\gopath\bin\fyne.exe bundle -o bundled.go ./assets/font/STXINWEI.TTF
+// 添加捆绑
+D:\GoEnv\gopath\bin\fyne.exe bundle -o bundled.go -append ./assets/font/STXINWEI.TTF
 
 // 运行示例demo：
 go run fyne.io/fyne/v2/cmd/fyne_demo@latest

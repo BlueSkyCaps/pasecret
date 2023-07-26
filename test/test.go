@@ -53,28 +53,32 @@ func decrypt(key []byte, ciphertext string) (string, error) {
 }
 
 func main() {
+
 	key, err := common.KeyBytesAES(common.AppProductKeyAES)
 	if err != nil {
 		println(err.Error())
 	}
 	// 待加密的数据
-	plaintext := "Hello, AES2222wd是，，，发唧唧复唧唧大约为七点七一缗彂!"
 
+	name := "In+lnVpEiA/qQ8CBbTgpaIScIbPoBQeLKoleyQ=="
 	// 加密数据
-	encrypted, err := encrypt(key, plaintext)
-	if err != nil {
-		fmt.Println("Error encrypting:", err)
-		return
-	}
+	name, err = decrypt(key, name)
+	println(name)
+	accountName := "cGqeKMBARnIeAI57bPEZ6CqmEUGyUIYJ"
+	// 加密数据
+	accountName, err = decrypt(key, accountName)
+	println(accountName)
+	password := "HN0hZAW1PXb0cbK7nw3dGNiz"
+	// 加密数据
+	password, err = decrypt(key, password)
+	println(password)
+	site := "JjxX6m0F2nC27P1Nqez36t1A2bgQOQ9MOLc/NW/K3wFaVasVNSTOQk4="
+	// 加密数据
+	site, err = decrypt(key, site)
+	println(site)
+	remark := "R7TjREKMX3s06daubeZZdMffSl2OGYRQaDqxMRmieuNFyICBJ8MegqOCNv3Xi97gF0ZzESE85ksGVnBoAveXypd3YKsiTW6T+0pivtinHyG6n7fbMMrLF1Y3SYU33cDBK7noEaXt/lTv+H5gvw=="
+	// 加密数据
+	remark, err = decrypt(key, remark)
+	println(remark)
 
-	// 解密数据
-	decrypted, err := decrypt(key, encrypted)
-	if err != nil {
-		fmt.Println("Error decrypting:", err)
-		return
-	}
-
-	fmt.Println("Original:", plaintext)
-	fmt.Println("Encrypted:", encrypted)
-	fmt.Println("Decrypted:", decrypted)
 }
