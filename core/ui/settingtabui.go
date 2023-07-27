@@ -2,20 +2,26 @@ package ui
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"net/url"
+	"os"
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
 	"strings"
 	"time"
 )
 
-var treeSettingDictParent = []string{"启动密码", "备份还原", "多端同步", "捐助"}
+var treeSettingDictParent = []string{"启动密码", "备份还原", "多端同步", "捐助赞赏", "关于"}
 var treeSettingDict map[string][]string = map[string][]string{
 	treeSettingDictParent[0]: {"NotChild_0"},
 	treeSettingDictParent[1]: {"备份数据", "还原数据到本机"},
 	treeSettingDictParent[2]: {"NotChild_1"},
 	treeSettingDictParent[3]: {"NotChild_3"},
+	treeSettingDictParent[4]: {"NotChild_4"},
 }
 
 func createSettingTabContent() *widget.Tree {
@@ -62,9 +68,83 @@ func createSettingTabContent() *widget.Tree {
 			if id == treeSettingDict[treeSettingDictParent[1]][1] {
 				button.OnTapped = restoreBthCallBack
 			}
-
+			// 若是捐助赞赏
+			if id == treeSettingDictParent[3] {
+				button.OnTapped = donateBthCallBack
+			}
+			// 若是关于
+			if id == treeSettingDictParent[4] {
+				button.OnTapped = aboutBthCallBack
+			}
 		})
 	return tree
+}
+
+// 关于按钮回调响应
+func aboutBthCallBack() {
+	window := storagejson.AppRef.A.NewWindow("关于")
+	appLinkUri, err := url.Parse(common.AppLinkUri_)
+	githubUri, err := url.Parse(common.GithubUri)
+	blogUri, err := url.Parse(common.BlogUri)
+	if err != nil {
+		return
+	}
+	statementLabel := widget.NewLabel("")
+	statementLabel.SetText("本软件作者：BlueSkyCaps。本软件不传输任何数据，只有在“捐助赞赏”中需要联网加载付款二维码，\r\n" +
+		"并且事先有提示是否打开。本软件加密存储您保存的数据，但不代表百分百能够保障您的数据安全。如您在使用此软件过程中产生数\r\n" +
+		"据丢失、账户密码泄露造成的损失，本软件和作者不负任何责任，损失由您自己或其他方面造成且承担。\r\n使用本软件代表您同意此内容。")
+	statementScroll := container.NewHScroll(statementLabel)
+	statementScroll.Hide()
+	center := container.NewCenter(container.NewVBox(
+		widget.NewLabelWithStyle("Pasecret是一款能在多个平台运行的账号密码管理软件。\r\n"+
+			"例如，您可以在手机上使用，并且同步数据到电脑端。\r\n"+
+			"数据采用加密算法，并且可以断网使用，不会进行远程传输。\r\n"+
+			"欢迎进行捐助赞赏，作者表示感激。",
+			fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		container.NewCenter(container.NewHBox(
+			widget.NewHyperlink("软件主页", appLinkUri),
+			widget.NewLabel("-"),
+			widget.NewHyperlink("Github", githubUri),
+			widget.NewLabel("-"),
+			widget.NewHyperlink("作者博客", blogUri),
+		)),
+		widget.NewButton("免责声明等", func() {
+			statementScroll.Show()
+		}),
+		statementScroll,
+	))
+	window.SetContent(center)
+	window.Show()
+}
+
+// 捐助按钮响应函数
+func donateBthCallBack() {
+	window := storagejson.AppRef.A.NewWindow("捐助赞赏")
+	uriWechat, err := storage.ParseURI(common.DonateWechatUri_)
+	uriAlipay, err := storage.ParseURI(common.DonateAliPayUri_)
+	if err != nil {
+		dialog.ShowInformation("err", "donateBthCallBack:"+err.Error(), storagejson.AppRef.W)
+		return
+	}
+	wechatimage := canvas.NewImageFromURI(uriWechat)
+	alipayimage := canvas.NewImageFromURI(uriAlipay)
+	// 窗口将会自动达到图片原图尺寸大小，窗口高度将至少达到子组件需要显示的高度
+	wechatimage.FillMode = canvas.ImageFillOriginal
+	alipayimage.FillMode = canvas.ImageFillOriginal
+	box := container.NewVBox(widget.NewLabel("微信扫一扫"), wechatimage, widget.NewLabel("支付宝扫一扫"), alipayimage)
+	if fyne.CurrentDevice().IsMobile() {
+		// 移动端因为尺寸小，可能达不到图片显示的高度，会被截停，因此添加垂直滚动条
+		window.SetContent(container.NewVScroll(box))
+	} else {
+		window.SetContent(box)
+	}
+	dialog.ShowConfirm("嘻嘻", "捐助赞赏需要进行网络连接\r\n"+
+		"获取赞赏二维码、赞赏者列表。本应用不会传递任何其他数据，\r\n是否继续？", func(b bool) {
+		if !b {
+			return
+		}
+		window.Show()
+	}, storagejson.AppRef.W)
 }
 
 // 备份数据响应函数
@@ -163,11 +243,13 @@ func restoreBthCallBack() {
 			dialog.ShowInformation("err", "restoreBthCallBack, common.WriteExistedFile:"+err.Error(), storagejson.AppRef.W)
 			return
 		}
-		dialog.ShowInformation("提示", "数据已还原，请重启应用。", storagejson.AppRef.W)
+		dialog.ShowInformation("提示", "数据已还原，请重新打开程序。", storagejson.AppRef.W)
 		go func() {
 			time.Sleep(time.Millisecond * 3000)
-			storagejson.AppRef.W.Close()
+			//移动端无法退出：storagejson.AppRef.A.Quit()
+			os.Exit(0)
 		}()
+
 	}, storagejson.AppRef.W)
 	//fileOpen := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 	//	if reader == nil {
