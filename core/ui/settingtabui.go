@@ -105,18 +105,19 @@ func restoreBthCallBack() {
 			// 文件选择对话框选择了取消
 			return
 		}
-		var jsonD = make([]byte, 2048, 4056)
-		if err != nil {
-			dialog.ShowInformation("err", "restoreBthCallBack:"+err.Error(), storagejson.AppRef.W)
+		reader.Close()
+		// 从reader获取选择文件路径读取数据
+		r, jsonD, err := common.ReadFileAsBytes(reader.URI().Path())
+		if !r {
+			dialog.ShowInformation("err", "restoreBthCallBack, common.ReadFileAsBytes:"+err.Error(), storagejson.AppRef.W)
 			return
 		}
 		// 将还原的数据重新覆盖到本地存储库
-		_, err = reader.Read(jsonD)
-		if err != nil {
+		r, err = common.WriteExistedFile(storagejson.StoDPath, jsonD)
+		if !r {
 			dialog.ShowInformation("err", "restoreBthCallBack, common.WriteExistedFile:"+err.Error(), storagejson.AppRef.W)
 			return
 		}
-		reader.Close()
 		dialog.ShowInformation("提示", "数据已还原，请重启应用。", storagejson.AppRef.W)
 		go func() {
 			time.Sleep(time.Millisecond * 3000)
