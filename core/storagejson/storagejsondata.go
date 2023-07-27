@@ -45,7 +45,7 @@ func EditData(theData Data, isEditOp bool, cidOrg string) {
 		dialog.NewInformation("err", "EditCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return
 	}
-	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	r, err := common.WriteExistedFile(StoDPath, marshalDJson)
 	if !r {
 		dialog.NewInformation("err", "EditCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
@@ -72,7 +72,7 @@ func DeleteData(delD Data) {
 		dialog.NewInformation("err", "DeleteData, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return
 	}
-	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	r, err := common.WriteExistedFile(StoDPath, marshalDJson)
 	if !r {
 		dialog.NewInformation("err", "DeleteData, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return

@@ -31,10 +31,10 @@ func Run() {
 	// 加载网格容器到它的父布局
 	gridParent.Add(grid)
 	// 将工具条和文件夹网格列表放进border，形成垂直布局效果
-	homeTab := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
-	settingTab := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
+	homeTabContent := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
+	settingTabContent := container.NewBorder(nil, nil, nil, nil, createSettingTabContent())
 	// 添加tabs选项卡
-	appTabs := firstAddTabs(homeTab, settingTab)
+	appTabs := firstAddTabs(homeTabContent, settingTabContent)
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
 	storagejson.AppRef.W.ShowAndRun()

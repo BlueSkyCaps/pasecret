@@ -14,10 +14,10 @@ import (
 )
 
 var AppRef AppStructRef
-var stoDPath string
+var StoDPath string
 
 func LoadInit(data []byte) {
-	stoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
+	StoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
 	existed := common.Existed(AppRef.A.Storage().RootURI().Path())
 	// 若RootURI目录不存在，则先创建目录（目前是在Android端必须先创建，因为不存在/data/user/0/top.reminisce.xxx/files/fyne）
 	if !existed {
@@ -27,15 +27,15 @@ func LoadInit(data []byte) {
 		}
 	}
 
-	stoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
+	StoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
 	// 不存在默认密码数据文件，则创建
-	if !common.Existed(stoDPath) {
-		r, err := common.CreateFile(stoDPath, data)
+	if !common.Existed(StoDPath) {
+		r, err := common.CreateFile(StoDPath, data)
 		if !r {
 			dialog.NewInformation("err", "storage loadInit, CreateFile:"+err.Error(), AppRef.W).Show()
 		}
 	}
-	load(stoDPath)
+	load(StoDPath)
 }
 
 // 从本地存储库d.json加载密码数据
@@ -113,7 +113,7 @@ func EditCategory(e *common.EditForm, editCi Category, editCard *widget.Card) {
 		dialog.NewInformation("err", "EditCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return
 	}
-	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	r, err := common.WriteExistedFile(StoDPath, marshalDJson)
 	if !r {
 		dialog.NewInformation("err", "EditCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
@@ -147,7 +147,7 @@ func AddCategory(e *common.EditForm) *Category {
 		dialog.NewInformation("err", "AddCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return nil
 	}
-	r, err = common.WriteExistedFile(stoDPath, marshalDJson)
+	r, err = common.WriteExistedFile(StoDPath, marshalDJson)
 	if !r {
 		dialog.NewInformation("err", "AddCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return nil
@@ -173,7 +173,7 @@ func DeleteCategory(delCi Category, delCard *widget.Card) {
 		dialog.NewInformation("err", "DeleteCategory, json.Marshal:"+err.Error(), AppRef.W).Show()
 		return
 	}
-	r, err := common.WriteExistedFile(stoDPath, marshalDJson)
+	r, err := common.WriteExistedFile(StoDPath, marshalDJson)
 	if !r {
 		dialog.NewInformation("err", "DeleteCategory, WriteExistedFile:"+err.Error(), AppRef.W).Show()
 		return
