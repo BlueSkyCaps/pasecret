@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	storagejson.AppRef.A = app.NewWithID("top.reminisce.test")
+	storagejson.AppRef.A = app.NewWithID("top.reminisce.pasecret")
 	t := &config.DefaultGlobalSettingTheme{}
 	t.SetFonts("STXINWEI.TTF", resourceSTXINWEITTF.StaticContent)
 	// 更新主题，让fyne使用自定义主题配置

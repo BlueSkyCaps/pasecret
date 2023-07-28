@@ -1,10 +1,10 @@
 //// example command
 
 // 打包成apk：
-D:\GoEnv\gopath\bin\fyne.exe package -os android -appID top.example.rem -icon ./assets/20230714220531.png
+D:\GoEnv\gopath\bin\fyne.exe package -os android -appID top.example.pasecret -icon ./assets/logo.png
 
 // 打包成当前系统可执行文件，如exe：
-D:\GoEnv\gopath\bin\fyne.exe install -icon ./assets/20230714220531.png
+D:\GoEnv\gopath\bin\fyne.exe install -icon ./assets/logo.png
 
 // 捆绑资源文件：
 D:\GoEnv\gopath\bin\fyne.exe bundle -o bundled.go ./assets/font/STXINWEI.TTF

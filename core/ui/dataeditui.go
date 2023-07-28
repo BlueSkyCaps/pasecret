@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
@@ -68,6 +70,16 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 	remarkEntry.Text = theData.Remark
 	vBox.Add(remarkEntry)
 	// 创建水平按钮布局
+	copyBtn := widget.NewButtonWithIcon("", theme.ContentCopyIcon(), func() {
+		// 复制内容到系统剪切板
+		copyStr := fmt.Sprintf("名称：\n%s\n账号：\n%s\n密码：\n%s\n网址：\n%s\n备注：\n%s",
+			theData.Name, theData.AccountName, theData.Password, theData.Site, theData.Remark)
+		editW.Clipboard().SetContent(copyStr)
+		storagejson.AppRef.A.SendNotification(&fyne.Notification{
+			Title:   "Pasecret",
+			Content: "内容已复制到剪切板。",
+		})
+	})
 	editCancelBtn := widget.NewButton("取消", func() {
 		editW.Close()
 	})
@@ -81,7 +93,13 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 		editConfirmData(isEditOp, cidOrg, editW)
 	})
 	editConfirmBtn.Importance = widget.HighImportance
-	hBox := container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
+	var hBox *fyne.Container
+	// 是编辑 则显示复制按钮
+	if isEditOp {
+		hBox = container.NewHBox(copyBtn, widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
+	} else {
+		hBox = container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
+	}
 	vBox.Add(hBox)
 	editW.SetContent(vBox)
 	if !fyne.CurrentDevice().IsMobile() {

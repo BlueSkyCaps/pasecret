@@ -15,6 +15,9 @@ func ShowCategoryAddWin() {
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
+
+	common.EntryOnChangedEventHandler(nameEntry)
+
 	vBox.Add(nameEntry)
 	vBox.Add(widget.NewLabel("描述："))
 	descriptionEntry := widget.NewEntry()
