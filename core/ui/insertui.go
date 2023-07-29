@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
+	"unicode/utf8"
 )
 
 // ShowCategoryAddWin 首页点击了添加按钮，添加新归类夹
@@ -31,8 +32,7 @@ func ShowCategoryAddWin() {
 	})
 	editConfirmBtn := widget.NewButton("确定", func() {
 		e := &common.EditForm{Name: nameEntry.Text, Alias: aliasEntry.Text, Description: descriptionEntry.Text}
-		AddConfirm(e)
-		addW.Close()
+		AddConfirm(e, addW)
 	})
 	editConfirmBtn.Importance = widget.HighImportance
 	hBox := container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(), editCancelBtn, editConfirmBtn)
@@ -45,11 +45,28 @@ func ShowCategoryAddWin() {
 	addW.Show()
 }
 
-func AddConfirm(e *common.EditForm) {
+func AddConfirm(e *common.EditForm, addW fyne.Window) {
 	if common.IsWhiteAndSpace(e.Name) {
 		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejson.AppRef.W)
 		return
 	}
+	tips := ""
+	if utf8.RuneCountInString(e.Name) > 12 {
+		tips = "名称大于建议的长度:10字\n"
+	}
+	if utf8.RuneCountInString(e.Description) > 24 {
+		tips = tips + "描述大于建议的长度:24字\n"
+	}
+	tips = tips + "\n是否保存？"
+	dialog.ShowConfirm("提示", tips, func(b bool) {
+		if b {
+			addAsyncHandler(e)
+			addW.Close()
+		}
+	}, addW)
+}
+
+func addAsyncHandler(e *common.EditForm) {
 	// 先成功新增到本地存储库
 	addCi := storagejson.AddCategory(e)
 	if addCi == nil {

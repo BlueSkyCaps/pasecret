@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
+	"unicode/utf8"
 )
 
 // ShowCategoryEditWin 点击了某归类文件夹Card的Edit按钮，显示此具体编辑窗口
@@ -59,6 +60,23 @@ func editConfirm(e *common.EditForm, realCi storagejson.Category, ciCard *widget
 		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", editW)
 		return
 	}
+	tips := ""
+	if utf8.RuneCountInString(e.Name) > 12 {
+		tips = "名称大于建议的长度:10字\n"
+	}
+	if utf8.RuneCountInString(e.Description) > 24 {
+		tips = tips + "描述大于建议的长度:24字\n"
+	}
+	tips = tips + "\n是否保存？"
+	dialog.ShowConfirm("提示", tips, func(b bool) {
+		if b {
+			editAsyncHandler(e, realCi, ciCard)
+			editW.Close()
+		}
+	}, editW)
+
+}
+
+func editAsyncHandler(e *common.EditForm, realCi storagejson.Category, ciCard *widget.Card) {
 	storagejson.EditCategory(e, realCi, ciCard)
-	editW.Close()
 }

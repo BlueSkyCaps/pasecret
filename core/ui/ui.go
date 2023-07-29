@@ -129,9 +129,12 @@ func createHBox() *fyne.Container {
 func createGrid() *fyne.Container {
 	var grid *fyne.Container
 	if !fyne.CurrentDevice().IsMobile() {
-		grid = container.NewGridWrap(fyne.Size{Width: 200, Height: 150})
+		// NewGridWithColumns会自适应内容响应，如Grid由card组成，card标题不会换行，NewGridWithColumns可以自适应其宽度
+		// NewGridWrap不会适应card的标题宽度，但可以缩放窗体自动填充能承载的最大列数
+		grid = container.NewGridWithColumns(3)
+		//grid = container.NewGridWrap(fyne.Size{Width: 200, Height: 150})
 	} else {
-		grid = container.NewGridWithColumns(2)
+		grid = container.NewGridWithColumns(1)
 	}
 	return grid
 }

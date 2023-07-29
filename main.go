@@ -17,7 +17,8 @@ func init() {
 	storagejson.AppRef.W = storagejson.AppRef.A.NewWindow("Pasecret")
 	storagejson.AppRef.W.SetMaster()
 	if !fyne.CurrentDevice().IsMobile() {
-		storagejson.AppRef.W.Resize(fyne.Size{Height: 500, Width: 650})
+		//窗体宽度会由子容器grid自动适应
+		storagejson.AppRef.W.Resize(fyne.Size{Height: 540})
 	}
 }
 

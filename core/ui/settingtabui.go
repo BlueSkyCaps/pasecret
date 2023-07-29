@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"errors"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -63,18 +64,25 @@ func createSettingTabContent() *widget.Tree {
 			// 若是备份数据按钮
 			if id == treeSettingDict[treeSettingDictParent[1]][0] {
 				button.OnTapped = backupBthCallBack
+				return
 			}
 			// 若是还原数据按钮
 			if id == treeSettingDict[treeSettingDictParent[1]][1] {
 				button.OnTapped = restoreBthCallBack
+				return
 			}
 			// 若是捐助赞赏
 			if id == treeSettingDictParent[3] {
 				button.OnTapped = donateBthCallBack
+				return
 			}
 			// 若是关于
 			if id == treeSettingDictParent[4] {
 				button.OnTapped = aboutBthCallBack
+				return
+			}
+			button.OnTapped = func() {
+				dialog.ShowError(errors.New("维护中，尽情期待。"), storagejson.AppRef.W)
 			}
 		})
 	return tree
