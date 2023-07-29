@@ -81,6 +81,10 @@ func createSettingTabContent() *widget.Tree {
 				button.OnTapped = aboutBthCallBack
 				return
 			}
+			// 若是备份还原父按钮
+			if id == treeSettingDictParent[1] {
+				return
+			}
 			button.OnTapped = func() {
 				dialog.ShowError(errors.New("维护中，尽情期待。"), storagejson.AppRef.W)
 			}
@@ -128,6 +132,9 @@ func aboutBthCallBack() {
 // 捐助按钮响应函数
 func donateBthCallBack() {
 	window := storagejson.AppRef.A.NewWindow("捐助赞赏")
+	if !fyne.CurrentDevice().IsMobile() {
+		window.Resize(fyne.Size{Height: 800})
+	}
 	uriWechat, err := storage.ParseURI(common.DonateWechatUri_)
 	uriAlipay, err := storage.ParseURI(common.DonateAliPayUri_)
 	if err != nil {
@@ -136,7 +143,7 @@ func donateBthCallBack() {
 	}
 	wechatimage := canvas.NewImageFromURI(uriWechat)
 	alipayimage := canvas.NewImageFromURI(uriAlipay)
-	// 窗口将会自动达到图片原图尺寸大小，窗口高度将至少达到子组件需要显示的高度
+	// 窗口将会自动达到图片原图尺寸大小，但有时候会显示不全的bug，设置window.Resize
 	wechatimage.FillMode = canvas.ImageFillOriginal
 	alipayimage.FillMode = canvas.ImageFillOriginal
 	box := container.NewVBox(widget.NewLabel("微信扫一扫"), wechatimage, widget.NewLabel("支付宝扫一扫"), alipayimage)

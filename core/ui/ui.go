@@ -35,9 +35,26 @@ func Run() {
 	settingTabContent := container.NewBorder(nil, nil, nil, nil, createSettingTabContent())
 	// 添加tabs选项卡
 	appTabs := firstAddTabs(homeTabContent, settingTabContent)
+	AppTabsRefreshHandler(appTabs)
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
 	storagejson.AppRef.W.ShowAndRun()
+}
+
+// AppTabsRefreshHandler AppTabs的第二个tab页（设置页）在安卓端后台运行一段时间重新打开（基于安卓后台贮存机制不会关闭应用），
+// 设置页会显示空白。此处开启个go重新渲染
+func AppTabsRefreshHandler(tabs *container.AppTabs) {
+	if !fyne.CurrentDevice().IsMobile() {
+		return
+	}
+	go func() {
+		for true {
+			time.Sleep(time.Second * 2)
+			if tabs.SelectedIndex() == 1 {
+				tabs.Items[1].Content.Refresh()
+			}
+		}
+	}()
 }
 
 func loadItems() []fyne.CanvasObject {
