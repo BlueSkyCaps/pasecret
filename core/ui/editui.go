@@ -22,14 +22,17 @@ func ShowCategoryEditWin(ci storagejson.Category, ciCard *widget.Card) {
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(nameEntry)
 	nameEntry.Text = realCi.Name
 	vBox.Add(nameEntry)
 	vBox.Add(widget.NewLabel("描述："))
 	descriptionEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(descriptionEntry)
 	descriptionEntry.Text = realCi.Description
 	vBox.Add(descriptionEntry)
 	vBox.Add(widget.NewLabel("Alias："))
 	aliasEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(aliasEntry)
 	aliasEntry.Text = realCi.Alias
 	vBox.Add(aliasEntry)
 	// 创建水平按钮布局

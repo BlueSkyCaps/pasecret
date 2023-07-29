@@ -15,15 +15,15 @@ func ShowCategoryAddWin() {
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
-
 	common.EntryOnChangedEventHandler(nameEntry)
-
 	vBox.Add(nameEntry)
 	vBox.Add(widget.NewLabel("描述："))
 	descriptionEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(descriptionEntry)
 	vBox.Add(descriptionEntry)
 	vBox.Add(widget.NewLabel("Alias："))
 	aliasEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(aliasEntry)
 	vBox.Add(aliasEntry)
 	// 创建水平按钮布局
 	editCancelBtn := widget.NewButton("取消", func() {

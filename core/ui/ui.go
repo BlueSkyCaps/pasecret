@@ -115,6 +115,7 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 
 func createHBox() *fyne.Container {
 	storagejson.AppRef.SearchInput = widget.NewEntry()
+	common.EntryOnChangedEventHandler(storagejson.AppRef.SearchInput)
 	storagejson.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
 		if common.IsWhiteAndSpace(storagejson.AppRef.SearchInput.Text) {
 			return

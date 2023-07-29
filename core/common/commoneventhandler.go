@@ -8,6 +8,9 @@ import (
 	"unicode/utf8"
 )
 
+// EntryOnChangedEventHandler 安卓端退格键中文字符会被执行两次，导致删除两个字符（MuMu模拟机器中所有字符都会被退格两次）
+// 也许是fyne存在的bug。 Windows不会有此问题。
+//此Handler监听传递的Entry文本改变事件，根据毫秒级时间戳判断触发间隔来设置文本回退避免被删除两次
 func EntryOnChangedEventHandler(entry *widget.Entry) {
 	if !fyne.CurrentDevice().IsMobile() {
 		return
@@ -18,14 +21,12 @@ func EntryOnChangedEventHandler(entry *widget.Entry) {
 		var b sync.Mutex
 		tmp = entry.Text
 		entry.OnChanged = func(s string) {
-			println("tmp:" + tmp)
-			println("s:" + s)
 			if utf8.RuneCountInString(s) >= utf8.RuneCountInString(tmp) {
 				tmp = s
 				return
 			}
 			b.Lock()
-			if time.Now().UnixMilli()-t > 300 {
+			if time.Now().UnixMilli()-t > 200 {
 				//_, _ = utf8.DecodeLastRuneInString(tmp)
 				entry.SetText(tmp)
 				//tmp = entry.Text

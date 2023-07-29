@@ -51,22 +51,27 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(nameEntry)
 	nameEntry.Text = theData.Name
 	vBox.Add(nameEntry)
 	vBox.Add(widget.NewLabel("账号："))
 	accountNameEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(accountNameEntry)
 	accountNameEntry.Text = theData.AccountName
 	vBox.Add(accountNameEntry)
 	vBox.Add(widget.NewLabel("密码："))
 	passwordEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(passwordEntry)
 	passwordEntry.Text = theData.Password
 	vBox.Add(passwordEntry)
 	vBox.Add(widget.NewLabel("网址："))
 	siteEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(siteEntry)
 	siteEntry.Text = theData.Site
 	vBox.Add(siteEntry)
 	vBox.Add(widget.NewLabel("备注："))
 	remarkEntry := widget.NewMultiLineEntry()
+	common.EntryOnChangedEventHandler(remarkEntry)
 	remarkEntry.Text = theData.Remark
 	vBox.Add(remarkEntry)
 	// 创建水平按钮布局
