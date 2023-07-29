@@ -47,14 +47,15 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 		theData.Id = (*performDataOrg).Id
 
 	}
-
+	accountLabelText := dealEditDataAccountLabelText(theData.CategoryId)
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel("名称："))
 	nameEntry := widget.NewEntry()
 	common.EntryOnChangedEventHandler(nameEntry)
 	nameEntry.Text = theData.Name
 	vBox.Add(nameEntry)
-	vBox.Add(widget.NewLabel("账号："))
+
+	vBox.Add(widget.NewLabel(accountLabelText))
 	accountNameEntry := widget.NewEntry()
 	common.EntryOnChangedEventHandler(accountNameEntry)
 	accountNameEntry.Text = theData.AccountName
@@ -112,6 +113,18 @@ func showDataEditWin(performDataOrg *storagejson.Data, cidOrg string) {
 	}
 	editW.CenterOnScreen()
 	editW.Show()
+}
+
+// 根据是哪个归类夹id定义账号标签文本，如内置的银行卡，可以显示"卡号"而不是默认"账号"
+func dealEditDataAccountLabelText(cid string) string {
+	switch cid[0] {
+	case '0':
+		return "证件号码："
+	case '1':
+		return "卡号："
+	default:
+		return "账号："
+	}
 }
 
 func editConfirmData(isEditOp bool, cidOrg string, editW fyne.Window) {
