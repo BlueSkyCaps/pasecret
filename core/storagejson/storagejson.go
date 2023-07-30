@@ -199,8 +199,8 @@ func deleteCategoryRelated(delCi Category) {
 func SearchByKeywordTo(kw string) []common.SearchDataResultViewModel {
 	var vm []common.SearchDataResultViewModel
 	for _, d := range AppRef.LoadedItems.Data {
-		if strings.Contains(d.Name, kw) || strings.Contains(d.Remark, kw) || strings.Contains(d.AccountName, kw) ||
-			strings.Contains(d.Site, kw) {
+		if strings.Contains(strings.ToLower(d.Name), kw) || strings.Contains(strings.ToLower(d.Remark), kw) ||
+			strings.Contains(strings.ToLower(d.AccountName), kw) || strings.Contains(strings.ToLower(d.Site), kw) {
 			var c common.SearchDataResultViewModel
 			c.VDataAccountName = d.AccountName
 			// 根据CategoryId找归类文件夹名称

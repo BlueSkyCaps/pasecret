@@ -41,12 +41,9 @@ func Run() {
 	storagejson.AppRef.W.ShowAndRun()
 }
 
-// AppTabsRefreshHandler AppTabs的第二个tab页（设置页）在安卓端后台运行一段时间重新打开（基于安卓后台贮存机制不会关闭应用），
+// AppTabsRefreshHandler AppTabs的第二个tab页（设置页）运行一段时间重新显示（安卓后台贮存机制不会关闭应用），
 // 设置页会显示空白。此处开启个go重新渲染
 func AppTabsRefreshHandler(tabs *container.AppTabs) {
-	if !fyne.CurrentDevice().IsMobile() {
-		return
-	}
 	go func() {
 		for true {
 			time.Sleep(time.Second * 2)
@@ -57,7 +54,7 @@ func AppTabsRefreshHandler(tabs *container.AppTabs) {
 	}()
 }
 
-func loadItems() []fyne.CanvasObject {
+func loadItems_() []fyne.CanvasObject {
 	var cardItemsF []fyne.CanvasObject
 	var wg sync.WaitGroup
 	categoryLen := len(storagejson.AppRef.LoadedItems.Category)
@@ -72,6 +69,16 @@ func loadItems() []fyne.CanvasObject {
 		time.Sleep(time.Millisecond * 10)
 	}
 	wg.Wait()
+	return cardItemsF
+}
+func loadItems() []fyne.CanvasObject {
+	var cardItemsF []fyne.CanvasObject
+	categoryLen := len(storagejson.AppRef.LoadedItems.Category)
+
+	for i := 0; i < categoryLen; i++ {
+		currentCart := CreateCurrentCart(storagejson.AppRef.LoadedItems.Category[i])
+		cardItemsF = append(cardItemsF, currentCart)
+	}
 	return cardItemsF
 }
 
