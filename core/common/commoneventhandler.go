@@ -41,3 +41,32 @@ func EntryOnChangedEventHandler(entry *widget.Entry) {
 		}
 	}()
 }
+
+var SearchTmp string
+
+func SearchEntryOnChangedEventHandler(entry *widget.Entry) {
+	if !fyne.CurrentDevice().IsMobile() {
+		return
+	}
+	t := time.Now().UnixMilli()
+	var b sync.Mutex
+	SearchTmp = entry.Text
+	entry.OnChanged = func(s string) {
+		if utf8.RuneCountInString(s) >= utf8.RuneCountInString(SearchTmp) {
+			SearchTmp = s
+			return
+		}
+		b.Lock()
+		if time.Now().UnixMilli()-t > 200 {
+			//_, _ = utf8.DecodeLastRuneInString(tmp)
+			entry.SetText(SearchTmp)
+			//tmp = entry.Text
+			entry.CursorColumn = utf8.RuneCountInString(SearchTmp)
+			entry.Refresh()
+		} else {
+			SearchTmp = entry.Text
+		}
+		t = time.Now().UnixMilli()
+		b.Unlock()
+	}
+}

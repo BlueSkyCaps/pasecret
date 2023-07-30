@@ -66,7 +66,7 @@ func Run(lock bool) {
 func AppTabsRefreshHandler(tabs *container.AppTabs) {
 	go func() {
 		for true {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 1)
 			if tabs.SelectedIndex() == 1 {
 				tabs.Items[1].Content.Refresh()
 			}
@@ -154,14 +154,20 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 
 func createHBox() *fyne.Container {
 	searchInputEntry := widget.NewEntry()
-	common.EntryOnChangedEventHandler(searchInputEntry)
+	// 安卓端 专为searchInputEntry控制的
+	common.SearchEntryOnChangedEventHandler(searchInputEntry)
 	searchBtn := widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
 		if common.IsWhiteAndSpace(searchInputEntry.Text) {
 			return
 		}
 		ShowSearchResultWin(searchInputEntry.Text)
+		/*安卓端 searchInputEntry的Text更改，common.SearchTmp也要同步更改，因为common.SearchTmp存储的还是是之前的值
+		安卓端common.SearchEntryOnChangedEventHandler控制退格键避免退两次字符。
+		windows忽略此问题*/
 		// 在安卓端，必須Text賦值且Refresh才會更新文本框值,SetText無效
+		searchInputEntry.SetText("")
 		searchInputEntry.Text = ""
+		common.SearchTmp = ""
 		searchInputEntry.Refresh()
 	})
 	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), searchInputEntry, searchBtn)

@@ -1,4 +1,4 @@
-// Package preferences 加载首选项配置，如启动密码
+// Package preferences 加载首选项配置，如启动密码。不使用fyne的preferences提供的方法，因为在安卓端存储失败
 package preferences
 
 import (
