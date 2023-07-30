@@ -102,15 +102,15 @@ func aboutBthCallBack() {
 		return
 	}
 	statementLabel := widget.NewLabel("")
-	statementLabel.SetText("本软件作者：BlueSkyCaps。本软件不传输任何数据，只有在“捐助赞赏”中需要联网加载付款二维码，\r\n" +
-		"并且事先有提示是否打开。本软件加密存储您保存的数据，但不代表百分百能够保障您的数据安全。如您在使用此软件过程中产生数\r\n" +
-		"据丢失、账户密码泄露造成的损失，本软件和作者不负任何责任，损失由您自己或其他方面造成且承担。\r\n使用本软件代表您同意此内容。")
+	statementLabel.SetText("本软件作者：BlueSkyCaps。本软件不传输任何数据，只有在“捐助赞赏”中需要联网加载付款二维码，\n" +
+		"并且事先有提示是否打开。本软件加密存储您保存的数据，但不代表百分百能够保障您的数据安全。如您在使用此软件过程中产生数\n" +
+		"据丢失、账户密码泄露造成的损失，本软件和作者不负任何责任，损失由您自己或其他方面造成且承担。\n使用本软件代表您同意此内容。")
 	statementScroll := container.NewHScroll(statementLabel)
 	statementScroll.Hide()
 	center := container.NewCenter(container.NewVBox(
-		widget.NewLabelWithStyle("Pasecret是一款能在多个平台运行的账号密码管理软件。\r\n"+
-			"例如，您可以在手机上使用，并且同步数据到电脑端。\r\n"+
-			"数据采用加密算法，并且可以断网使用，不会进行远程传输。\r\n"+
+		widget.NewLabelWithStyle("Pasecret是一款能在多个平台运行的账号密码管理软件。\n"+
+			"例如，您可以在手机上使用，并且同步数据到电脑端。\n"+
+			"数据采用加密算法，并且可以断网使用，不会进行远程传输。\n"+
 			"欢迎进行捐助赞赏，作者表示感激。",
 			fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		container.NewCenter(container.NewHBox(
@@ -153,8 +153,8 @@ func donateBthCallBack() {
 	} else {
 		window.SetContent(box)
 	}
-	dialog.ShowConfirm("嘻嘻", "捐助赞赏需要进行网络连接\r\n"+
-		"获取赞赏二维码、赞赏者列表。本应用不会传递任何其他数据，\r\n是否继续？", func(b bool) {
+	dialog.ShowConfirm("嘻嘻", "捐助赞赏需要进行网络连接\n"+
+		"获取赞赏二维码、赞赏者列表。本应用不会传递任何其他数据，\n是否继续？", func(b bool) {
 		if !b {
 			return
 		}
@@ -291,7 +291,7 @@ func restoreBthCallBack() {
 	//	}()
 	//}, storagejson.AppRef.W)
 	//fileOpen.SetFilter(storage.NewExtensionFileFilter([]string{".json"}))
-	dialog.ShowConfirm("提示", "你即将还原备份数据，\r\n还原成功原本地数据将不可恢复，\r\n确定？", func(b bool) {
+	dialog.ShowConfirm("提示", "你即将还原备份数据，\n还原成功原本地数据将不可恢复，\r\n确定？", func(b bool) {
 		if !b {
 			return
 		}

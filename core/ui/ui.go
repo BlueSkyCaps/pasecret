@@ -97,7 +97,7 @@ func CreateCurrentCart(ci storagejson.Category) *widget.Card {
 				dialog.ShowInformation("提示", "该归类不可被删除。", storagejson.AppRef.W)
 				return
 			}
-			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除‘%s’？该归类保存的所有密码一并会被删除。", ci.Name),
+			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除\n‘%s’？\n该归类保存的所有密码一并会被删除。", ci.Name),
 				func(b bool) {
 					if b {
 						go func() {
