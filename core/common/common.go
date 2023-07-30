@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -140,3 +141,14 @@ var DonateWechatUri_ = "http://sto.reminisce.top/OTHER/donate/wechat.jpg"
 var AppLinkUri_ = "https://apps.reminisce.top/pasecret"
 var GithubUri = "https://github.com/BlueSkyCaps/pasecret"
 var BlogUri = "https://www.reminisce.top/"
+
+func MatchPwdFormat(str string) bool {
+	// 定义一个表示4个数字的正则表达式
+	re, _ := regexp.Compile(`^\d{4}$`)
+
+	// 使用正则表达式进行匹配
+	if re.MatchString(str) {
+		return true
+	}
+	return false
+}

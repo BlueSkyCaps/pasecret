@@ -5,14 +5,12 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
-	"strings"
 )
 
 // ShowSearchResultWin 点击了搜索按钮，根据文本框关键词显示结果
-func ShowSearchResultWin() {
+func ShowSearchResultWin(text string) {
 	// 根据关键词获取数据视图模型
-	text := storagejson.AppRef.SearchInput.Text
-	viewModels := storagejson.SearchByKeywordTo(strings.ToLower(text))
+	viewModels := storagejson.SearchByKeywordTo(text)
 	resW := storagejson.AppRef.A.NewWindow("搜索结果")
 	// 将表头元素放在首位
 	viewModels = append(viewModels, common.SearchDataResultViewModel{})
@@ -67,5 +65,4 @@ func ShowSearchResultWin() {
 	resW.CenterOnScreen()
 	resW.RequestFocus()
 	resW.Show()
-	storagejson.AppRef.SearchInput.SetText("")
 }

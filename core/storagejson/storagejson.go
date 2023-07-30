@@ -24,15 +24,17 @@ func LoadInit(data []byte) {
 		r, err := common.CreateDir(AppRef.A.Storage().RootURI().Path())
 		if !r {
 			dialog.NewInformation("err", "storage loadInit, MkdirAll:"+err.Error(), AppRef.W).Show()
+			return
 		}
 	}
 
 	StoDPath = path.Join(AppRef.A.Storage().RootURI().Path(), "d.json")
-	// 不存在默认密码数据文件，则创建
+	// 不存在默认数据文件，则创建
 	if !common.Existed(StoDPath) {
 		r, err := common.CreateFile(StoDPath, data)
 		if !r {
 			dialog.NewInformation("err", "storage loadInit, CreateFile:"+err.Error(), AppRef.W).Show()
+			return
 		}
 	}
 	load(StoDPath)
@@ -43,10 +45,12 @@ func load(stoDPath string) {
 	r, bs, err := common.ReadFileAsBytes(stoDPath)
 	if !r {
 		dialog.NewInformation("err", "storage load, ReadFileAsString:"+err.Error(), AppRef.W).Show()
+		return
 	}
 	err = json.Unmarshal(bs, &AppRef.LoadedItems)
 	if err != nil {
 		dialog.NewInformation("err", "storage load, json.Marshal d:"+err.Error(), AppRef.W).Show()
+		return
 	}
 	// 解密
 	decLoadedData()

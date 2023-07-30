@@ -71,7 +71,6 @@ func enterNumberBtnHandler(i string) {
 	if len(currentValidNumbs) == 4 {
 		lockpw := preferences.GetPreferenceByLockPwd()
 		if lockpw == currentValidNumbs {
-			// 打开主窗口，关闭解锁窗口
 			storagejson.AppRef.W.Show()
 			lockWin.Close()
 		}

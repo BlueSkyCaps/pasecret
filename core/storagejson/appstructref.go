@@ -13,10 +13,9 @@ import (
 // AppStructRef App操作句柄
 type AppStructRef struct {
 	W                   fyne.Window
+	LockWin             fyne.Window
 	A                   fyne.App
 	LoadedItems         LoadedItems
-	SearchInput         *widget.Entry
-	SearchBtn           *widget.Button
 	CardsGrid           *fyne.Container
 	DataList            *widget.List
 	DataListWin         fyne.Window

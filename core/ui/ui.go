@@ -12,7 +12,7 @@ import (
 	"image/color"
 	"pasecret/core/common"
 	storagejson "pasecret/core/storagejson"
-	"sync"
+	"pasecret/test"
 	"time"
 )
 
@@ -39,10 +39,13 @@ func Run(sr bool) {
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
 	if sr {
-		LockUI().Show()
+		storagejson.AppRef.LockWin = LockUI()
+		storagejson.AppRef.LockWin.Show()
 		storagejson.AppRef.A.Run()
 	} else {
-		storagejson.AppRef.W.ShowAndRun()
+		storagejson.AppRef.W.Show()
+		storagejson.AppRef.A.Run()
+
 	}
 
 }
@@ -60,23 +63,18 @@ func AppTabsRefreshHandler(tabs *container.AppTabs) {
 	}()
 }
 
-func loadItems_() []fyne.CanvasObject {
-	var cardItemsF []fyne.CanvasObject
-	var wg sync.WaitGroup
-	categoryLen := len(storagejson.AppRef.LoadedItems.Category)
-	wg.Add(categoryLen)
-
-	for i := 0; i < categoryLen; i++ {
-		go func(i_ int, wg_ *sync.WaitGroup) {
-			defer wg_.Done()
-			currentCart := CreateCurrentCart(storagejson.AppRef.LoadedItems.Category[i])
-			cardItemsF = append(cardItemsF, currentCart)
-		}(i, &wg)
-		time.Sleep(time.Millisecond * 10)
+func LockUILifecycleHandler() {
+	if !fyne.CurrentDevice().IsMobile() {
+		return
 	}
-	wg.Wait()
-	return cardItemsF
+	storagejson.AppRef.A.Lifecycle().SetOnExitedForeground(func() {
+		println("lost")
+	})
+	storagejson.AppRef.A.Lifecycle().SetOnEnteredForeground(func() {
+		println("get")
+	})
 }
+
 func loadItems() []fyne.CanvasObject {
 	var cardItemsF []fyne.CanvasObject
 	categoryLen := len(storagejson.AppRef.LoadedItems.Category)
@@ -144,15 +142,19 @@ func addCategoryMenuToolbar() *widget.Toolbar {
 }
 
 func createHBox() *fyne.Container {
-	storagejson.AppRef.SearchInput = widget.NewEntry()
-	common.EntryOnChangedEventHandler(storagejson.AppRef.SearchInput)
-	storagejson.AppRef.SearchBtn = widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
-		if common.IsWhiteAndSpace(storagejson.AppRef.SearchInput.Text) {
+	searchInputEntry := widget.NewEntry()
+	common.EntryOnChangedEventHandler(searchInputEntry)
+	searchBtn := widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
+		if common.IsWhiteAndSpace(searchInputEntry.Text) {
 			return
 		}
-		ShowSearchResultWin()
+		ShowSearchResultWin(searchInputEntry.Text)
+		// 在安卓端，必須Text賦值且Refresh才會更新文本框值,SetText無效
+		searchInputEntry.Text = ""
+		searchInputEntry.Refresh()
+		test.SendNotification(searchInputEntry.Text)
 	})
-	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), storagejson.AppRef.SearchInput, storagejson.AppRef.SearchBtn)
+	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), searchInputEntry, searchBtn)
 	return vBoxLayout
 }
 

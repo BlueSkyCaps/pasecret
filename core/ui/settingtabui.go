@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"pasecret/core/common"
+	"pasecret/core/preferences"
 	"pasecret/core/storagejson"
 	"strings"
 	"time"
@@ -71,6 +72,11 @@ func createSettingTabContent() *widget.Tree {
 				button.OnTapped = restoreBthCallBack
 				return
 			}
+			// 若是启动密码
+			if id == treeSettingDictParent[0] {
+				button.OnTapped = lockPwdBthCallBack
+				return
+			}
 			// 若是捐助赞赏
 			if id == treeSettingDictParent[3] {
 				button.OnTapped = donateBthCallBack
@@ -92,7 +98,71 @@ func createSettingTabContent() *widget.Tree {
 	return tree
 }
 
-// 关于按钮回调响应
+// 启动密码 按钮回调
+func lockPwdBthCallBack() {
+	// 之前是否配置过启动密码
+	ced := !common.IsWhiteAndSpace(preferences.GetPreferenceByLockPwd())
+	window := storagejson.AppRef.A.NewWindow("设置启动密码")
+	if !fyne.CurrentDevice().IsMobile() {
+		window.CenterOnScreen()
+		window.Resize(fyne.Size{Width: 300, Height: 400})
+	}
+	if ced {
+		window.Show()
+		dialog.ShowConfirm("选择", "您已经设置过启动密码。\n您需要关闭或者重设密码吗？", func(b bool) {
+			if b {
+				preferences.RemovePreferenceByLockPwd()
+				dialog.ShowInformation("提示", "已关闭启动密码。\n您现在可以选择重新设置了。", window)
+				go func() {
+					time.Sleep(time.Millisecond * 3000)
+					os.Exit(0)
+				}()
+			} else {
+				window.Close()
+			}
+		}, window)
+		return
+	}
+	tipLabel := widget.NewLabel("输入四位数密码：")
+	pwdEntry := widget.NewPasswordEntry()
+	tipLabel2 := widget.NewLabel("再次确认输入：")
+	pwdEntry2 := widget.NewPasswordEntry()
+	cBtn := widget.NewButton("取消", func() {
+		window.Close()
+	})
+	yesBtn := widget.NewButton("确定", func() {
+		if !common.MatchPwdFormat(pwdEntry.Text) || !common.MatchPwdFormat(pwdEntry2.Text) {
+			dialog.ShowInformation("提示", "请输入4个数字！", window)
+			return
+		}
+		if pwdEntry.Text != pwdEntry2.Text {
+			dialog.ShowInformation("提示", "两次密码不匹配！", window)
+			return
+		}
+		dialog.ShowConfirm("重要提示！",
+			"准备设置启动密码:\n"+
+				"请您牢记您刚刚设置的4位数字，\n"+
+				"若您忘记，将无法进入应用。\n"+
+				"建议您先备份数据，若您遗忘密码，\n"+
+				"可以尽可能保留存储的数据。\n"+
+				"最后，是否确定开启？！", func(b bool) {
+				if b {
+					preferences.SetPreferenceByLockPwd(pwdEntry.Text)
+					dialog.ShowInformation("提示", "已开启，请重启应用。", window)
+					go func() {
+						time.Sleep(time.Millisecond * 3000)
+						os.Exit(0)
+					}()
+				}
+			}, window)
+	})
+
+	center := container.NewCenter(container.NewVBox(tipLabel, pwdEntry, tipLabel2, pwdEntry2, cBtn, yesBtn))
+	window.SetContent(center)
+	window.Show()
+}
+
+// 关于 按钮回调响应
 func aboutBthCallBack() {
 	window := storagejson.AppRef.A.NewWindow("关于")
 	appLinkUri, err := url.Parse(common.AppLinkUri_)
@@ -102,9 +172,12 @@ func aboutBthCallBack() {
 		return
 	}
 	statementLabel := widget.NewLabel("")
-	statementLabel.SetText("本软件作者：BlueSkyCaps。本软件不传输任何数据，只有在“捐助赞赏”中需要联网加载付款二维码，\n" +
-		"并且事先有提示是否打开。本软件加密存储您保存的数据，但不代表百分百能够保障您的数据安全。如您在使用此软件过程中产生数\n" +
-		"据丢失、账户密码泄露造成的损失，本软件和作者不负任何责任，损失由您自己或其他方面造成且承担。\n使用本软件代表您同意此内容。")
+	statementLabel.SetText(
+		"本软件作者：BlueSkyCaps。本软件不传输任何数据，只有在“捐助赞赏”中需要联网加载付款二维码，\n" +
+			"并且事先有提示是否打开。本软件加密存储您保存的数据，但不代表百分百能够保障您的数据安全。\n" +
+			"如您在使用此软件过程中产生数据丢失、账户密码泄露造成的损失，本软件和作者不负任何责任，\n" +
+			"损失由您自己或其他方面造成且承担。\n" +
+			"使用本软件代表您同意此内容。")
 	statementScroll := container.NewHScroll(statementLabel)
 	statementScroll.Hide()
 	center := container.NewCenter(container.NewVBox(
@@ -129,7 +202,7 @@ func aboutBthCallBack() {
 	window.Show()
 }
 
-// 捐助按钮响应函数
+// 捐助赞赏 按钮响应函数
 func donateBthCallBack() {
 	window := storagejson.AppRef.A.NewWindow("捐助赞赏")
 	if !fyne.CurrentDevice().IsMobile() {
@@ -153,8 +226,8 @@ func donateBthCallBack() {
 	} else {
 		window.SetContent(box)
 	}
-	dialog.ShowConfirm("嘻嘻", "捐助赞赏需要进行网络连接\n"+
-		"获取赞赏二维码、赞赏者列表。本应用不会传递任何其他数据，\n是否继续？", func(b bool) {
+	dialog.ShowConfirm("嘿嘿", "捐助赞赏需要进行网络连接\n"+
+		"获取赞赏二维码、赞赏者列表。\n本应用不会传递任何其他数据，\n是否继续？", func(b bool) {
 		if !b {
 			return
 		}
@@ -162,7 +235,7 @@ func donateBthCallBack() {
 	}, storagejson.AppRef.W)
 }
 
-// 备份数据响应函数
+// 备份数据 响应函数
 /*
 	安卓端必须使用fyne.URIWriteCloser.Write将数据写入选择的uri，或许是fyne的问题，
 	安卓端无法将数据写入到非app本地存储库中，common.CreateFile函数创建uriWriteCloser.URI().Path()的目录提示目录不存在或权限问题。
@@ -191,32 +264,6 @@ func backupBthCallBack() {
 		}, storagejson.AppRef.W)
 		return
 	}
-	//dialog.ShowFileSave(func(uriWriteCloser fyne.URIWriteCloser, err error) {
-	//	if uriWriteCloser == nil {
-	//		// 保存对话框选择了取消
-	//		return
-	//	}
-	//	var savePath string = uriWriteCloser.URI().Path()
-	//	// 保存格式为json
-	//	if !strings.HasSuffix(uriWriteCloser.URI().Name(), ".json") {
-	//		savePath = uriWriteCloser.URI().Path() + ".json"
-	//	}
-	//	dialog.ShowInformation("1", savePath, storagejson.AppRef.W)
-	//
-	//	r, jsonD, err := common.ReadFileAsBytes(storagejson.StoDPath)
-	//	if !r {
-	//		dialog.ShowInformation("err", "backupBthCallBack:"+err.Error(), storagejson.AppRef.W)
-	//		return
-	//	}
-	//
-	//	r, err = common.CreateFile(savePath, jsonD)
-	//	if !r {
-	//		dialog.ShowInformation("err", "backupBthCallBack, common.CreateFile:"+err.Error(), storagejson.AppRef.W)
-	//		return
-	//	}
-	//	dialog.ShowInformation("提示", "已备份数据到选择的目录中，可将其用于还原。", storagejson.AppRef.W)
-	//	uriWriteCloser.Close()
-	//}, storagejson.AppRef.W)
 
 }
 
@@ -266,31 +313,6 @@ func restoreBthCallBack() {
 		}()
 
 	}, storagejson.AppRef.W)
-	//fileOpen := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
-	//	if reader == nil {
-	//		// 文件选择对话框选择了取消
-	//		return
-	//	}
-	//	// 从reader获取选择文件路径读取数据
-	//	r, jsonD, err := common.ReadFileAsBytes(reader.URI().Path())
-	//	if !r {
-	//		dialog.ShowInformation("err", "restoreBthCallBack, common.ReadFileAsBytes:"+err.Error(), storagejson.AppRef.W)
-	//		return
-	//	}
-	//	reader.Close()
-	//	// 将还原的数据重新覆盖到本地存储库
-	//	r, err = common.WriteExistedFile(storagejson.StoDPath, jsonD)
-	//	if !r {
-	//		dialog.ShowInformation("err", "restoreBthCallBack, common.WriteExistedFile:"+err.Error(), storagejson.AppRef.W)
-	//		return
-	//	}
-	//	dialog.ShowInformation("提示", "数据已还原，请重启应用。", storagejson.AppRef.W)
-	//	go func() {
-	//		time.Sleep(time.Millisecond * 3000)
-	//		storagejson.AppRef.W.Close()
-	//	}()
-	//}, storagejson.AppRef.W)
-	//fileOpen.SetFilter(storage.NewExtensionFileFilter([]string{".json"}))
 	dialog.ShowConfirm("提示", "你即将还原备份数据，\n还原成功原本地数据将不可恢复，\r\n确定？", func(b bool) {
 		if !b {
 			return
