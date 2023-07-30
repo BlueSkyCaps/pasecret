@@ -20,12 +20,18 @@ var displayNumberLabels []*widget.Label = []*widget.Label{
 }
 var currentNumberClickCount uint8
 var currentValidNumbs string
-var lockWin fyne.Window
 
 func LockUI() fyne.Window {
 	currentNumberClickCount = 0
 	currentValidNumbs = ""
-	lockWin = storagejson.AppRef.A.NewWindow("Pasecret")
+	storagejson.AppRef.LockWin = storagejson.AppRef.A.NewWindow("Pasecret")
+	if fyne.CurrentDevice().IsMobile() {
+		storagejson.AppRef.LockWin.SetOnClosed(func() {
+			// 关闭解锁窗口回调，立马重新生成显示解锁窗口，因为上一次的解锁窗口资源已被释放，必须重新调用生成
+			LockUI().Show()
+		})
+	}
+
 	displayNumberHBox := container.NewHBox()
 	for i := 0; i < len(displayNumberLabels); i++ {
 		displayNumberLabels[i].SetText(displayUnChar)
@@ -55,8 +61,8 @@ func LockUI() fyne.Window {
 
 	center := container.NewCenter()
 	center.Add(vBox)
-	lockWin.SetContent(center)
-	return lockWin
+	storagejson.AppRef.LockWin.SetContent(center)
+	return storagejson.AppRef.LockWin
 }
 
 // 点击了任意数字按钮
@@ -71,8 +77,17 @@ func enterNumberBtnHandler(i string) {
 	if len(currentValidNumbs) == 4 {
 		lockpw := preferences.GetPreferenceByLockPwd()
 		if lockpw == currentValidNumbs {
-			storagejson.AppRef.W.Show()
-			lockWin.Close()
+			if !fyne.CurrentDevice().IsMobile() {
+				storagejson.AppRef.W.Show()
+				storagejson.AppRef.LockWin.Close()
+			} else {
+				// 安卓端必须隐藏窗口来代替Close关闭窗口，因为Close会递归引发SetOnClosed事件
+				storagejson.AppRef.LockWin.Hide()
+				// 充值本次窗口回调，再关闭窗口，不会引起原事件
+				storagejson.AppRef.LockWin.SetOnClosed(func() {
+				})
+				storagejson.AppRef.LockWin.Close()
+			}
 		}
 		// 验证失败，重新改变状态为初始化
 		currentValidNumbs = ""

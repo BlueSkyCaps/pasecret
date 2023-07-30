@@ -125,8 +125,10 @@ func lockPwdBthCallBack() {
 	}
 	tipLabel := widget.NewLabel("输入四位数密码：")
 	pwdEntry := widget.NewPasswordEntry()
+	common.EntryOnChangedEventHandler(pwdEntry)
 	tipLabel2 := widget.NewLabel("再次确认输入：")
 	pwdEntry2 := widget.NewPasswordEntry()
+	common.EntryOnChangedEventHandler(pwdEntry2)
 	cBtn := widget.NewButton("取消", func() {
 		window.Close()
 	})

@@ -12,12 +12,11 @@ import (
 	"image/color"
 	"pasecret/core/common"
 	storagejson "pasecret/core/storagejson"
-	"pasecret/test"
 	"time"
 )
 
 // Run 开始定义UI元素并显示窗口
-func Run(sr bool) {
+func Run(lock bool) {
 	// 创建工具条容器，包含了添加按钮、搜索按钮
 	toolbarBox := createHBox()
 	// 创建网格容器父布局
@@ -38,14 +37,26 @@ func Run(sr bool) {
 	AppTabsRefreshHandler(appTabs)
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
-	if sr {
-		storagejson.AppRef.LockWin = LockUI()
-		storagejson.AppRef.LockWin.Show()
-		storagejson.AppRef.A.Run()
+	if lock {
+		if !fyne.CurrentDevice().IsMobile() {
+			storagejson.AppRef.LockWin = LockUI()
+			storagejson.AppRef.LockWin.Show()
+			storagejson.AppRef.A.Run()
+			return
+		}
+		/*注意 安卓端如果先显示解锁窗口，则后续解锁成功Show显示主窗口W会造成显示面积只有大约1/4。
+		必须第一时间W.ShowAndRun()才能正常显示整个屏幕。因此采用开启一个goroutine，等待一会立马
+		置顶显示解锁窗口，因为执行ShowAndRun()会阻塞后面代码。但点击解锁窗口关闭按钮，回调事件立马
+		再次显示解锁窗口。只有在输入正确密码后才会主动隐藏解锁窗口*/
+		go func() {
+			time.Sleep(time.Second * 1)
+			storagejson.AppRef.LockWin = LockUI()
+			storagejson.AppRef.LockWin.Show()
+		}()
+		storagejson.AppRef.W.ShowAndRun()
 	} else {
 		storagejson.AppRef.W.Show()
 		storagejson.AppRef.A.Run()
-
 	}
 
 }
@@ -152,7 +163,6 @@ func createHBox() *fyne.Container {
 		// 在安卓端，必須Text賦值且Refresh才會更新文本框值,SetText無效
 		searchInputEntry.Text = ""
 		searchInputEntry.Refresh()
-		test.SendNotification(searchInputEntry.Text)
 	})
 	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), searchInputEntry, searchBtn)
 	return vBoxLayout
