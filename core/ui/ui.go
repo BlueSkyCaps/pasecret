@@ -17,7 +17,7 @@ import (
 )
 
 // Run 开始定义UI元素并显示窗口
-func Run() {
+func Run(sr bool) {
 	// 创建工具条容器，包含了添加按钮、搜索按钮
 	toolbarBox := createHBox()
 	// 创建网格容器父布局
@@ -38,7 +38,13 @@ func Run() {
 	AppTabsRefreshHandler(appTabs)
 	// 设置窗体最终布局内容
 	storagejson.AppRef.W.SetContent(appTabs)
-	storagejson.AppRef.W.ShowAndRun()
+	if sr {
+		LockUI().Show()
+		storagejson.AppRef.A.Run()
+	} else {
+		storagejson.AppRef.W.ShowAndRun()
+	}
+
 }
 
 // AppTabsRefreshHandler AppTabs的第二个tab页（设置页）运行一段时间重新显示（安卓后台贮存机制不会关闭应用），

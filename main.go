@@ -3,7 +3,9 @@ package main
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"pasecret/core/common"
 	"pasecret/core/config"
+	"pasecret/core/preferences"
 	"pasecret/core/storagejson"
 	"pasecret/core/ui"
 )
@@ -26,5 +28,15 @@ func init() {
 
 func main() {
 	storagejson.LoadInit(resourceDJson.StaticContent)
-	ui.Run()
+	uIHandler()
+}
+
+func uIHandler() {
+	// 有设置启动密码则先显示解锁
+	if !common.IsWhiteAndSpace(preferences.GetPreferenceByLockPwd()) {
+		ui.Run(true)
+	} else {
+		// 否则直接显示主窗口
+		ui.Run(false)
+	}
 }

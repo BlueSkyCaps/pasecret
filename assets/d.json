@@ -1,6 +1,5 @@
 {
   "global_config": {
-    "category_lock_pwd": null,
     "sync_branch": 0
   },
   "category": [

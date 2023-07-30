@@ -1,4 +1,4 @@
-// Package storagejson 贮存密码箱数据，加载、保存本地数据
+// Package storagejson 贮存密码箱数据，加载、保存本地存储库
 package storagejson
 
 import (
