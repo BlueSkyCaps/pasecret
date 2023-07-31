@@ -47,7 +47,7 @@ func ShowCategoryAddWin() {
 
 func AddConfirm(e *common.EditForm, addW fyne.Window) {
 	if common.IsWhiteAndSpace(e.Name) {
-		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", storagejson.AppRef.W)
+		dialog.ShowInformation("提示", "归类文件夹名称不能是空的。", addW)
 		return
 	}
 	tips := ""
