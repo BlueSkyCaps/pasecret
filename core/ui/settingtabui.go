@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"encoding/json"
 	"errors"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -299,12 +300,18 @@ func restoreBthCallBack() {
 			// 将本轮读取到的数据逐个追加到jsonD
 			jsonD = append(jsonD, buffer[:i]...)
 		}
-
 		reader.Close()
+		err = json.Unmarshal(jsonD, &storagejson.AppRef.LoadedItems)
+		if err != nil {
+			dialog.ShowCustom("错误", "还原失败，不是有效的Pasecret数据文件！\n"+err.Error(),
+				widget.NewLabel(""), storagejson.AppRef.W)
+			return
+		}
 		// 将还原的数据重新覆盖到本地存储库
 		r, err := common.WriteExistedFile(storagejson.StoDPath, jsonD)
 		if !r {
-			dialog.ShowInformation("err", "restoreBthCallBack, common.WriteExistedFile:"+err.Error(), storagejson.AppRef.W)
+			dialog.ShowInformation("err", "restoreBthCallBack, common.WriteExistedFile:"+err.Error(),
+				storagejson.AppRef.W)
 			return
 		}
 		dialog.ShowInformation("提示", "数据已还原，请重新打开程序。", storagejson.AppRef.W)

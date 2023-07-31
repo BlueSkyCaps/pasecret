@@ -11,9 +11,11 @@ import (
 
 // ShowDataList 点击了某个归类文件夹列表按钮，显示此文件夹的密码项
 func ShowDataList(ci storagejson.Category) {
+	// 获取当前归类夹 因为如果编辑了归类夹，参数ci的值不是最新的
+	realCi := storagejson.GetCategoryByCid(ci.Id)
 	// 获取此文件夹的密码项
 	relatedData := storagejson.GetRelatedDataByCid(ci.Id)
-	dataW := storagejson.AppRef.A.NewWindow(ci.Name)
+	dataW := storagejson.AppRef.A.NewWindow(realCi.Name)
 	// 将密码项列表窗口贮存到AppRef中后续更新小部件的回调函数使用弹窗作为其父窗口
 	storagejson.AppRef.DataListWin = dataW
 	bottomHBox := container.NewHBox()

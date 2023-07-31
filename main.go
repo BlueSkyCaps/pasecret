@@ -18,12 +18,12 @@ func init() {
 	// 更新主题，让fyne使用自定义主题配置
 	storagejson.AppRef.A.Settings().SetTheme(t)
 	storagejson.AppRef.W = storagejson.AppRef.A.NewWindow("Pasecret")
+	storagejson.AppRef.W.CenterOnScreen()
 	storagejson.AppRef.W.SetMaster()
 	if !fyne.CurrentDevice().IsMobile() {
 		//窗体宽度会由子容器grid自动适应
 		storagejson.AppRef.W.Resize(fyne.Size{Height: 540})
 	}
-
 }
 
 func main() {

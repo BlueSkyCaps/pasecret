@@ -8,7 +8,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"pasecret/core/common"
 	"path"
-	"sort"
 	"strings"
 	"time"
 )
@@ -208,11 +207,8 @@ func SearchByKeywordTo(kw string) []common.SearchDataResultViewModel {
 			var c common.SearchDataResultViewModel
 			c.VDataAccountName = d.AccountName
 			// 根据CategoryId找归类文件夹名称
-			for _, ci := range AppRef.LoadedItems.Category {
-				if ci.Id == d.CategoryId {
-					c.VDataCategoryName = ci.Name
-				}
-			}
+			realCi := GetCategoryByCid(d.CategoryId)
+			c.VDataCategoryName = realCi.Name
 			c.VDataName = d.Name
 			c.VDataPassword = d.Password
 			c.VDataRemark = d.Remark
@@ -223,9 +219,12 @@ func SearchByKeywordTo(kw string) []common.SearchDataResultViewModel {
 	return vm
 }
 
-// 按原有Rank顺序排序
-func sortCategory() {
-	sort.Slice(AppRef.LoadedItems.Category, func(i, j int) bool {
-		return AppRef.LoadedItems.Category[i].Rank < AppRef.LoadedItems.Category[i].Rank
-	})
+func GetCategoryByCid(cid string) Category {
+	var realCi Category
+	for _, nci := range AppRef.LoadedItems.Category {
+		if nci.Id == cid {
+			realCi = nci
+		}
+	}
+	return realCi
 }

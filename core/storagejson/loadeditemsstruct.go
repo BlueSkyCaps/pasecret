@@ -2,8 +2,7 @@ package storagejson
 
 type LoadedItems struct {
 	GlobalConfig struct {
-		CategoryLockPwd interface{} `json:"category_lock_pwd"`
-		SyncBranch      int         `json:"sync_branch"`
+		SyncBranch int `json:"sync_branch"`
 	} `json:"global_config"`
 	Category []Category `json:"category"`
 	Data     []Data     `json:"data"`

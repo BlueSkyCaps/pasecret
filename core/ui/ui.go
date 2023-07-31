@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
+	"os"
 	"pasecret/core/common"
 	storagejson "pasecret/core/storagejson"
 	"time"
@@ -31,7 +32,8 @@ func Run(lock bool) {
 	gridParent.Add(grid)
 	// 将工具条和文件夹网格列表放进border，形成垂直布局效果
 	homeTabContent := container.NewBorder(toolbarBox, nil, nil, nil, container.NewVScroll(gridParent))
-	settingTabContent := container.NewBorder(nil, nil, nil, nil, createSettingTabContent())
+	settingTabBottom := createSettingTabBottom()
+	settingTabContent := container.NewBorder(nil, settingTabBottom, nil, nil, createSettingTabContent())
 	// 添加tabs选项卡
 	appTabs := firstAddTabs(homeTabContent, settingTabContent)
 	AppTabsRefreshHandler(appTabs)
@@ -40,6 +42,7 @@ func Run(lock bool) {
 	if lock {
 		if !fyne.CurrentDevice().IsMobile() {
 			storagejson.AppRef.LockWin = LockUI()
+			storagejson.AppRef.LockWin.CenterOnScreen()
 			storagejson.AppRef.LockWin.Show()
 			storagejson.AppRef.A.Run()
 			return
@@ -49,7 +52,7 @@ func Run(lock bool) {
 		置顶显示解锁窗口，因为执行ShowAndRun()会阻塞后面代码。但点击解锁窗口关闭按钮，回调事件立马
 		再次显示解锁窗口。只有在输入正确密码后才会主动隐藏解锁窗口*/
 		go func() {
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Millisecond * 300)
 			storagejson.AppRef.LockWin = LockUI()
 			storagejson.AppRef.LockWin.Show()
 		}()
@@ -59,6 +62,13 @@ func Run(lock bool) {
 		storagejson.AppRef.A.Run()
 	}
 
+}
+
+func createSettingTabBottom() *fyne.Container {
+	return container.NewHBox(widget.NewToolbarSpacer().ToolbarObject(),
+		widget.NewButtonWithIcon("", theme.LogoutIcon(), func() {
+			os.Exit(0)
+		}))
 }
 
 // AppTabsRefreshHandler AppTabs的第二个tab页（设置页）运行一段时间重新显示（安卓后台贮存机制不会关闭应用），
@@ -75,14 +85,8 @@ func AppTabsRefreshHandler(tabs *container.AppTabs) {
 }
 
 func LockUILifecycleHandler() {
-	if !fyne.CurrentDevice().IsMobile() {
-		return
-	}
-	storagejson.AppRef.A.Lifecycle().SetOnExitedForeground(func() {
-		println("lost")
-	})
 	storagejson.AppRef.A.Lifecycle().SetOnEnteredForeground(func() {
-		println("get")
+		LockUI().Show()
 	})
 }
 
@@ -119,7 +123,8 @@ func CreateCurrentCart(ci storagejson.Category) *widget.Card {
 				dialog.ShowInformation("提示", "该归类不可被删除。", storagejson.AppRef.W)
 				return
 			}
-			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除\n‘%s’？\n该归类保存的所有密码一并会被删除。", ci.Name),
+			realCi := storagejson.GetCategoryByCid(ci.Id)
+			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除\n‘%s’？\n该归类保存的所有密码一并会被删除。", realCi.Name),
 				func(b bool) {
 					if b {
 						go func() {
