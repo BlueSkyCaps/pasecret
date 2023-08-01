@@ -209,7 +209,7 @@ func aboutBthCallBack() {
 func donateBthCallBack() {
 	window := storagejson.AppRef.A.NewWindow("捐助赞赏")
 	if !fyne.CurrentDevice().IsMobile() {
-		window.Resize(fyne.Size{Height: 800})
+		window.Resize(fyne.Size{Height: 700})
 	}
 	uriWechat, err := storage.ParseURI(common.DonateWechatUri_)
 	uriAlipay, err := storage.ParseURI(common.DonateAliPayUri_)

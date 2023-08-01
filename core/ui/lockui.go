@@ -73,7 +73,6 @@ func enterNumberBtnHandler(i string) {
 	// 追加当前点击的数字
 	currentValidNumbs = currentValidNumbs + i
 	// 若点击了第四次，则进行验证
-	println(currentValidNumbs)
 	if len(currentValidNumbs) == 4 {
 		lockpw := preferences.GetPreferenceByLockPwd()
 		if lockpw == currentValidNumbs {

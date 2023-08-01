@@ -5,17 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
-
-func GetParentDirectory(path string) string {
-	println(filepath.Dir(path))
-	return filepath.Dir(path)
-}
 
 // Existed 目录或文件是否存在
 func Existed(path string) bool {
