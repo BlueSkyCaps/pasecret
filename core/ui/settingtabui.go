@@ -112,7 +112,7 @@ func lockPwdBthCallBack() {
 		window.Show()
 		dialog.ShowConfirm("选择", "您已经设置过启动密码。\n您需要关闭或者重设密码吗？", func(b bool) {
 			if b {
-				preferences.RemovePreferenceByLockPwd()
+				preferences.RemovePreference("LockPwd")
 				dialog.ShowInformation("提示", "已关闭启动密码。\n您现在可以选择重新设置了。", window)
 				go func() {
 					time.Sleep(time.Millisecond * 3000)
@@ -150,7 +150,7 @@ func lockPwdBthCallBack() {
 				"可以尽可能保留存储的数据。\n"+
 				"最后，是否确定开启？！", func(b bool) {
 				if b {
-					preferences.SetPreferenceByLockPwd(pwdEntry.Text)
+					preferences.SetPreference("LockPwd", pwdEntry.Text)
 					dialog.ShowInformation("提示", "已开启，请重启应用。", window)
 					go func() {
 						time.Sleep(time.Millisecond * 3000)

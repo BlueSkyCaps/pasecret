@@ -7,10 +7,12 @@ import (
 	"pasecret/core/common"
 	"pasecret/core/storagejson"
 	"path"
+	"reflect"
 )
 
 type Preferences struct {
-	LockPwd string `json:"lock_pwd"`
+	LockPwd   string `json:"lock_pwd"`
+	LocalLang string `json:"local_lang"`
 }
 
 var preferencePath string
@@ -25,9 +27,7 @@ func preferenceInit() {
 	preferencePath = path.Join(storagejson.AppRef.A.Storage().RootURI().Path(), "preference.json")
 	// 不存在首选项文件，则创建
 	if !common.Existed(preferencePath) {
-		initPre := Preferences{
-			LockPwd: "",
-		}
+		initPre := Preferences{}
 		marshal, err := json.Marshal(initPre)
 		if err != nil {
 			dialog.ShowInformation("err", "preferenceInit, json.Marshal:"+err.Error(), storagejson.AppRef.W)
@@ -54,10 +54,16 @@ func readPreference() *Preferences {
 	}
 	return &preference
 }
-func SetPreferenceByLockPwd(v interface{}) {
+func SetPreference(key string, v interface{}) {
 	preferenceInit()
 	preference := readPreference()
-	preference.LockPwd = v.(string)
+	preferenceR := reflect.ValueOf(preference)
+	keyNameR := preferenceR.Elem().FieldByName(key)
+	if !reflect.ValueOf(v).Type().AssignableTo(keyNameR.Type()) {
+		dialog.NewInformation("err", "AssignableTo, v ref cant assignable to keyNameR", storagejson.AppRef.W).Show()
+		return
+	}
+	keyNameR.Set(reflect.ValueOf(v))
 	marshal, err := json.Marshal(preference)
 	if err != nil {
 		dialog.ShowInformation("err", "SetPreferenceByLockPwd, json.Marshal:"+err.Error(), storagejson.AppRef.W)
@@ -69,10 +75,15 @@ func SetPreferenceByLockPwd(v interface{}) {
 		return
 	}
 }
-func RemovePreferenceByLockPwd() {
-	preferenceInit()
+func RemovePreference(key string) {
 	preference := readPreference()
-	preference.LockPwd = ""
+	preferenceR := reflect.ValueOf(preference)
+	keyNameR := preferenceR.Elem().FieldByName(key)
+	if keyNameR.IsZero() {
+		dialog.NewInformation("err", "RemovePreferenceBy, key ref is zero", storagejson.AppRef.W).Show()
+		return
+	}
+	keyNameR.Set(reflect.Zero(keyNameR.Type()))
 	marshal, err := json.Marshal(preference)
 	if err != nil {
 		dialog.ShowInformation("err", "RemovePreferenceByLockPwd, json.Marshal:"+err.Error(), storagejson.AppRef.W)

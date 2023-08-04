@@ -1,9 +1,9 @@
-package test
+package main
 
 import (
 	"fmt"
 	"fyne.io/fyne/v2"
-	"time"
+	"pasecret/core/i18n"
 )
 
 func SendNotification(s string) {
@@ -14,11 +14,6 @@ func SendNotification(s string) {
 }
 
 func main() {
-	p := time.Now().UnixMilli()
-	time.Sleep(time.Millisecond * 3000)
-	fmt.Println(time.Now().UnixMilli())
-	fmt.Println(p)
-
-	s := []string{"1", "2", "3"}
-	fmt.Println(s[:len(s)-1])
+	message01 := i18n.Test01("Tips", "zh")
+	fmt.Println(message01)
 }

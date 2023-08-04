@@ -5,7 +5,7 @@
   "category": [
     {
       "name": "证件",
-      "alias": "Documents",
+      "alias": "Identity Documents|ID Card, Driver's License, Passport, Residence Permit...",
       "description": "身份证、护照等居民证件",
       "id": "0-built-in-cannot-be-removed",
       "rank": 0,
@@ -14,7 +14,7 @@
     },
     {
       "name": "银行卡",
-      "alias": "Bank cards",
+      "alias": "Bank cards|Debit cards, credit cards, etc",
       "description": "银行类的储蓄卡、信用卡等",
       "id": "1-built-in-cannot-be-removed",
       "rank": 1,
@@ -23,7 +23,7 @@
     },
     {
       "name": "Web网站",
-      "alias": "Websites",
+      "alias": "Websites|Websites that require username and password",
       "description": "需要用户名和密码的网站",
       "id": "2-built-in-cannot-be-removed",
       "rank": 2,
@@ -32,7 +32,7 @@
     },
     {
       "name": "应用程序",
-      "alias": "Software",
+      "alias": "Software|Applications that require username and password",
       "description": "需要用户名和密码的应用程序",
       "id": "3-built-in-can-removed",
       "rank": 3,
@@ -41,7 +41,7 @@
     },
     {
       "name": "其余",
-      "alias": "Other",
+      "alias": "Other|Account information that is not yet categorized",
       "description": "暂未归类的账户信息",
       "id": "4-built-in-can-removed",
       "rank": 4,
