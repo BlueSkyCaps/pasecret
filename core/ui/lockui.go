@@ -4,8 +4,9 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"pasecret/core/pi18n"
 	"pasecret/core/preferences"
-	"pasecret/core/storagejson"
+	"pasecret/core/storagedata"
 	"strconv"
 )
 
@@ -24,9 +25,9 @@ var currentValidNumbs string
 func LockUI() fyne.Window {
 	currentNumberClickCount = 0
 	currentValidNumbs = ""
-	storagejson.AppRef.LockWin = storagejson.AppRef.A.NewWindow("Pasecret")
+	storagedata.AppRef.LockWin = storagedata.AppRef.A.NewWindow("Pasecret")
 	if fyne.CurrentDevice().IsMobile() {
-		storagejson.AppRef.LockWin.SetOnClosed(func() {
+		storagedata.AppRef.LockWin.SetOnClosed(func() {
 			// 关闭解锁窗口回调，立马重新生成显示解锁窗口，因为上一次的解锁窗口资源已被释放，必须重新调用生成
 			LockUI().Show()
 		})
@@ -55,14 +56,15 @@ func LockUI() fyne.Window {
 		enterNumberGrid.Add(button)
 	}
 	vBox := container.NewVBox()
-	vBox.Add(widget.NewLabelWithStyle("解锁", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}))
+	vBox.Add(widget.NewLabelWithStyle(pi18n.LocalizedText("lockLabelText", nil),
+		fyne.TextAlignCenter, fyne.TextStyle{Bold: true}))
 	vBox.Add(displayNumberHBox)
 	vBox.Add(enterNumberGrid)
 
 	center := container.NewCenter()
 	center.Add(vBox)
-	storagejson.AppRef.LockWin.SetContent(center)
-	return storagejson.AppRef.LockWin
+	storagedata.AppRef.LockWin.SetContent(center)
+	return storagedata.AppRef.LockWin
 }
 
 // 点击了任意数字按钮
@@ -77,15 +79,15 @@ func enterNumberBtnHandler(i string) {
 		lockpw := preferences.GetPreferenceByLockPwd()
 		if lockpw == currentValidNumbs {
 			if !fyne.CurrentDevice().IsMobile() {
-				storagejson.AppRef.W.Show()
-				storagejson.AppRef.LockWin.Close()
+				storagedata.AppRef.W.Show()
+				storagedata.AppRef.LockWin.Close()
 			} else {
 				// 安卓端必须隐藏窗口来代替Close关闭窗口，因为Close会递归引发SetOnClosed事件
-				storagejson.AppRef.LockWin.Hide()
+				storagedata.AppRef.LockWin.Hide()
 				// 充值本次窗口回调，再关闭窗口，不会引起原事件
-				storagejson.AppRef.LockWin.SetOnClosed(func() {
+				storagedata.AppRef.LockWin.SetOnClosed(func() {
 				})
-				storagejson.AppRef.LockWin.Close()
+				storagedata.AppRef.LockWin.Close()
 			}
 		}
 		// 验证失败，重新改变状态为初始化

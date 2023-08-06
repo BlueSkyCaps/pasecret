@@ -2,7 +2,6 @@
 package ui
 
 import (
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -12,9 +11,12 @@ import (
 	"image/color"
 	"os"
 	"pasecret/core/common"
-	storagejson "pasecret/core/storagejson"
+	"pasecret/core/pi18n"
+	storagejson "pasecret/core/storagedata"
 	"time"
 )
+
+// SearchDataResultHeader 用于关键字搜索密码项展示table位于表头的列明
 
 // Run 开始定义UI元素并显示窗口
 func Run(lock bool) {
@@ -113,18 +115,21 @@ func CreateCurrentCart(ci storagejson.Category) *widget.Card {
 		}),
 		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
 			if !ci.Renameable {
-				dialog.ShowInformation("提示", "该归类不可被编辑。", storagejson.AppRef.W)
+				dialog.ShowInformation(pi18n.LocalizedText("dialogShowInformationTitle", nil),
+					pi18n.LocalizedText("categoryCanNotEditTips", nil), storagejson.AppRef.W)
 				return
 			}
 			ShowCategoryEditWin(ci, card)
 		}),
 		widget.NewToolbarAction(theme.DeleteIcon(), func() {
 			if !ci.Removable {
-				dialog.ShowInformation("提示", "该归类不可被删除。", storagejson.AppRef.W)
+				dialog.ShowInformation(pi18n.LocalizedText("dialogShowInformationTitle", nil),
+					pi18n.LocalizedText("categoryCanNotDelTips", nil), storagejson.AppRef.W)
 				return
 			}
 			realCi := storagejson.GetCategoryByCid(ci.Id)
-			dialog.ShowConfirm("提示", fmt.Sprintf("确定删除\n‘%s’？\n该归类保存的所有密码一并会被删除。", realCi.Name),
+			dialog.ShowConfirm(pi18n.LocalizedText("dialogShowInformationTitle", nil),
+				pi18n.LocalizedText("categoryDelConfirmMsg", map[string]interface{}{"name": realCi.Name}),
 				func(b bool) {
 					if b {
 						go func() {
@@ -161,20 +166,21 @@ func createHBox() *fyne.Container {
 	searchInputEntry := widget.NewEntry()
 	// 安卓端 专为searchInputEntry控制的
 	common.SearchEntryOnChangedEventHandler(searchInputEntry)
-	searchBtn := widget.NewButtonWithIcon("查找", theme.SearchIcon(), func() {
-		if common.IsWhiteAndSpace(searchInputEntry.Text) {
-			return
-		}
-		ShowSearchResultWin(searchInputEntry.Text)
-		/*安卓端 searchInputEntry的Text更改，common.SearchTmp也要同步更改，因为common.SearchTmp存储的还是是之前的值
-		安卓端common.SearchEntryOnChangedEventHandler控制退格键避免退两次字符。
-		windows忽略此问题*/
-		// 在安卓端，必須Text賦值且Refresh才會更新文本框值,SetText無效
-		searchInputEntry.SetText("")
-		searchInputEntry.Text = ""
-		common.SearchTmp = ""
-		searchInputEntry.Refresh()
-	})
+	searchBtn := widget.NewButtonWithIcon(pi18n.LocalizedText("SearchButtonText", nil),
+		theme.SearchIcon(), func() {
+			if common.IsWhiteAndSpace(searchInputEntry.Text) {
+				return
+			}
+			ShowSearchResultWin(searchInputEntry.Text)
+			/*安卓端 searchInputEntry的Text更改，common.SearchTmp也要同步更改，因为common.SearchTmp存储的还是是之前的值
+			安卓端common.SearchEntryOnChangedEventHandler控制退格键避免退两次字符。
+			windows忽略此问题*/
+			// 在安卓端，必須Text賦值且Refresh才會更新文本框值,SetText無效
+			searchInputEntry.SetText("")
+			searchInputEntry.Text = ""
+			common.SearchTmp = ""
+			searchInputEntry.Refresh()
+		})
 	vBoxLayout := container.NewHBox(addCategoryMenuToolbar(), searchInputEntry, searchBtn)
 	return vBoxLayout
 }

@@ -5,7 +5,7 @@
   "category": [
     {
       "name": "证件",
-      "alias": "Identity Documents|ID Card, Driver's License, Passport, Residence Permit...",
+      "alias": "Identity Documents|ID Card, Driver's License, Passport..",
       "description": "身份证、护照等居民证件",
       "id": "0-built-in-cannot-be-removed",
       "rank": 0,

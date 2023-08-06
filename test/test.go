@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"fyne.io/fyne/v2"
-	"pasecret/core/i18n"
+	"strconv"
 )
 
 func SendNotification(s string) {
@@ -14,6 +14,8 @@ func SendNotification(s string) {
 }
 
 func main() {
-	message01 := i18n.Test01("Tips", "zh")
+	c := "12345"
+	println(strconv.Atoi(string(c[0])))
+	message01 := Test01("lockPwdSetTipShowConfirm", "zh")
 	fmt.Println(message01)
 }

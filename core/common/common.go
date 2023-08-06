@@ -116,17 +116,6 @@ type SearchDataResultViewModel struct {
 	VDataCategoryName string
 }
 
-// SearchDataResultHeader 用于关键字搜索密码项展示table位于表头的列明
-var SearchDataResultHeader = SearchDataResultViewModel{
-	VDataName:        "项名称",
-	VDataAccountName: "账号",
-	VDataPassword:    "密码",
-	VDataSite:        "网址",
-	VDataRemark:      "备注",
-	//VDataId           0
-	VDataCategoryName: "所属归类夹",
-}
-
 // ShowSearchResultCeilWH_ 用于设置关键字搜索密码项展示table的单元格长度。
 //单元格宽高度可以由此填充字符定义，不要使用canvas.Text无法文本换行，不建议使用SetColumnWidth等设置宽高
 var ShowSearchResultCeilWH_ = "xxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx"
