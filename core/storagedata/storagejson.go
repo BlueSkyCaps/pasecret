@@ -63,11 +63,12 @@ func load(stoDPath string) {
 func setCategoryToCartTextByLang() {
 	var err error
 	for i := 0; i < len(AppRef.LoadedItems.Category); i++ {
-		if !strings.HasSuffix(AppRef.LoadedItems.Category[i].Id, "built-in-cannot-be-removed") {
+		var c int
+		c, err = strconv.Atoi(string(AppRef.LoadedItems.Category[i].Id[0]))
+		// 如果cid大於28，一定不是内置归类夹。因为新添加的归类夹id开头是日期形式大于28
+		if len(AppRef.LoadedItems.Category[i].Id) > 28 {
 			continue
 		}
-		c := 0
-		c, err = strconv.Atoi(string(AppRef.LoadedItems.Category[i].Id[0]))
 		// 变量c可以区分国际化文本的message id
 		AppRef.LoadedItems.Category[i].Name = AppRef.LocalizedTextFunc(fmt.Sprintf("buildInCategory%dName", c), nil)
 		AppRef.LoadedItems.Category[i].Description = AppRef.LocalizedTextFunc(fmt.Sprintf("buildInCategory%dDescription", c), nil)

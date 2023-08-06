@@ -240,8 +240,8 @@ func aboutBthCallBack() {
 	statementScroll := container.NewHScroll(statementLabel)
 	statementScroll.Hide()
 	center := container.NewCenter(container.NewVBox(
-		widget.NewLabelWithStyle(pi18n.LocalizedText("aboutIntroduceLabelText", nil),
-			fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		container.NewHScroll(widget.NewLabelWithStyle(pi18n.LocalizedText("aboutIntroduceLabelText", nil),
+			fyne.TextAlignCenter, fyne.TextStyle{Bold: true})),
 		container.NewCenter(container.NewHBox(
 			widget.NewHyperlink(pi18n.LocalizedText("aboutAppSiteLinkName", nil), appLinkUri),
 			widget.NewLabel("-"),
