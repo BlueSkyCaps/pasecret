@@ -60,11 +60,13 @@ func readPreference() *Preferences {
 	}
 	return &preference
 }
-func SetPreference(key string, v interface{}) {
+
+// SetPreference 设置首选项Preferences某个键的值，注意fieldName是结构体字段名而不是json文件实际存储的key键名
+func SetPreference(fieldName string, v interface{}) {
 	PreferenceInit()
 	preference := readPreference()
 	preferenceR := reflect.ValueOf(preference)
-	keyNameR := preferenceR.Elem().FieldByName(key)
+	keyNameR := preferenceR.Elem().FieldByName(fieldName)
 	if !reflect.ValueOf(v).Type().AssignableTo(keyNameR.Type()) {
 		dialog.NewInformation("err", "AssignableTo, v ref cant assignable to keyNameR", storagedata.AppRef.W).Show()
 		return

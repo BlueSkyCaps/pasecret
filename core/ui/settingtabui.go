@@ -93,6 +93,11 @@ func createSettingTabContent() *widget.Tree {
 				button.OnTapped = lockPwdBthCallBack
 				return
 			}
+			// 若是语言/language
+			if id == treeSettingDictParent[2] {
+				button.OnTapped = languageChiBthCallBack
+				return
+			}
 			// 若是捐助赞赏
 			if id == treeSettingDictParent[3] {
 				button.OnTapped = donateBthCallBack
@@ -107,12 +112,52 @@ func createSettingTabContent() *widget.Tree {
 			if id == treeSettingDictParent[1] {
 				return
 			}
+
 			button.OnTapped = func() {
 				dialog.ShowError(errors.New(pi18n.LocalizedText("settingTabShowErrorMaintenance", nil)),
 					storagedata.AppRef.W)
 			}
 		})
 	return tree
+}
+
+// 语言切换按钮回调
+func languageChiBthCallBack() {
+	lang := ""
+	window := storagedata.AppRef.A.NewWindow("Language/语言")
+	if !fyne.CurrentDevice().IsMobile() {
+		window.Resize(fyne.Size{Height: 200, Width: 400})
+	}
+	vbox := container.NewVBox()
+	radio := widget.NewRadioGroup([]string{"English", "中文"}, func(value string) {
+		if value == "English" {
+			lang = "en"
+		} else if value == "中文" {
+			lang = "zh"
+		} else {
+			lang = ""
+		}
+	})
+	vbox.Add(radio)
+	vbox.Add(widget.NewButton("Close/关闭", func() {
+		window.Close()
+	}))
+	vbox.Add(widget.NewButton("OK/确定", func() {
+		if common.IsWhiteAndSpace(lang) {
+			return
+		}
+		// 更新首选项的语言值
+		preferences.SetPreference("LocalLang", lang)
+		dialog.ShowInformation(pi18n.LocalizedText("dialogShowInformationTitle", nil),
+			"语言切换成功，请重启。\nswitch successful, please restart.", window)
+		go func() {
+			time.Sleep(time.Second * 3)
+			os.Exit(0)
+		}()
+	}))
+	window.SetContent(vbox)
+	window.CenterOnScreen()
+	window.Show()
 }
 
 // 启动密码 按钮回调
