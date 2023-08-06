@@ -126,7 +126,7 @@ func languageChiBthCallBack() {
 	lang := ""
 	window := storagedata.AppRef.A.NewWindow("Language/语言")
 	if !fyne.CurrentDevice().IsMobile() {
-		window.Resize(fyne.Size{Height: 200, Width: 400})
+		window.Resize(fyne.Size{Height: 185, Width: 400})
 	}
 	vbox := container.NewVBox()
 	radio := widget.NewRadioGroup([]string{"English", "中文"}, func(value string) {

@@ -1,7 +1,7 @@
 //// example command
 
 // 打包成apk：
-fyne package -os android -appID top.reminisce.pasecret -icon ./assets/logo.png -appVersion 1.0
+fyne package -os android -appID top.reminisce.pasecret -name Pasecret -icon ./assets/logo.png -appVersion 1.0
 
 // 打包成当前系统可执行文件，如exe：
 fyne install -icon ./assets/logo.png -appVersion 1.0
