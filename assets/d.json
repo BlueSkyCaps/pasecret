@@ -49,15 +49,5 @@
       "renameable": true
     }
   ],
-  "data": [
-    {
-      "name": "In+lnVpEiA/qQ8CBbTgpaIScIbPoBQeLKoleyQ==",
-      "account_name": "cGqeKMBARnIeAI57bPEZ6CqmEUGyUIYJ",
-      "password": "HN0hZAW1PXb0cbK7nw3dGNiz",
-      "site": "JjxX6m0F2nC27P1Nqez36t1A2bgQOQ9MOLc/NW/K3wFaVasVNSTOQk4=",
-      "remark": "R7TjREKMX3s06daubeZZdMffSl2OGYRQaDqxMRmieuNFyICBJ8MegqOCNv3Xi97gF0ZzESE85ksGVnBoAveXypd3YKsiTW6T+0pivtinHyG6n7fbMMrLF1Y3SYU33cDBK7noEaXt/lTv+H5gvw==",
-      "id": 42,
-      "category_id": "2-built-in-cannot-be-removed"
-    }
-  ]
+  "data": []
 }
