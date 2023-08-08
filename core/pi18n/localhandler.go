@@ -65,7 +65,6 @@ func initLocalize(lang string) {
 	_, err := bundle.LoadMessageFile(localFilePath)
 	if err != nil {
 		dialog.NewInformation("err", "initLocalize, LoadMessageFile:\n"+err.Error(), storagedata.AppRef.W).Show()
-		println(err.Error())
 		go func() {
 			time.Sleep(time.Second * 2)
 			os.Exit(1)

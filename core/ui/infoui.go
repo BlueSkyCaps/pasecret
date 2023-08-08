@@ -21,11 +21,11 @@ func ShowCategoryInfoWin(ci storagedata.Category) {
 	infoW := storagedata.AppRef.A.NewWindow("详情")
 	vBox := container.NewVBox()
 	vBox.Add(widget.NewLabel(pi18n.LocalizedText("categoryInsetNameLabel", nil)))
-	vBox.Add(canvas.NewText(realCi.Name, colornames.Darkblue))
+	vBox.Add(canvas.NewText(realCi.Name, colornames.Lightgreen))
 	vBox.Add(widget.NewLabel(pi18n.LocalizedText("categoryInsetDescriptionLabel", nil)))
-	vBox.Add(canvas.NewText(realCi.Description, colornames.Darkblue))
+	vBox.Add(canvas.NewText(realCi.Description, colornames.Lightgreen))
 	vBox.Add(widget.NewLabel("Alias："))
-	vBox.Add(canvas.NewText(realCi.Alias, colornames.Darkblue))
+	vBox.Add(canvas.NewText(realCi.Alias, colornames.Lightgreen))
 	vBox.Add(widget.NewLabel(pi18n.LocalizedText("categoryInfoCanDelIfLabel", nil)))
 	var re string
 	if realCi.Removable {
@@ -33,14 +33,14 @@ func ShowCategoryInfoWin(ci storagedata.Category) {
 	} else {
 		re = pi18n.LocalizedText("categoryInfoCanNotDelLabel", nil)
 	}
-	vBox.Add(canvas.NewText(re, colornames.Darkblue))
+	vBox.Add(canvas.NewText(re, colornames.Lightgreen))
 	vBox.Add(widget.NewLabel(pi18n.LocalizedText("categoryInfoCanEditIfLabel", nil)))
 	if realCi.Renameable {
 		re = pi18n.LocalizedText("categoryInfoCanEditLabel", nil)
 	} else {
 		re = pi18n.LocalizedText("categoryInfoCanNotEditLabel", nil)
 	}
-	vBox.Add(canvas.NewText(re, colornames.Darkblue))
+	vBox.Add(canvas.NewText(re, colornames.Lightgreen))
 	vBox.Add(widget.NewButton(pi18n.LocalizedText("categoryInsetOkButtonText", nil), func() {
 		infoW.Close()
 	}))

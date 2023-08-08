@@ -28,6 +28,7 @@ func init() {
 }
 
 func main() {
+	// resource data was bundled by fyne, and it's too long bytes so goland cant analyze immediately
 	pi18n.Local12Init(resourceAssetsI18nPasecretZhToml, resourceAssetsI18nPasecretEnToml)
 	storagedata.LoadInit(resourceDJson.StaticContent)
 	uIHandler()
