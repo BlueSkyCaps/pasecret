@@ -272,7 +272,7 @@ func donateBthCallBack() {
 	}
 	wechatimage := canvas.NewImageFromURI(uriWechat)
 	alipayimage := canvas.NewImageFromURI(uriAlipay)
-	// 窗口将会自动达到图片原图尺寸大小，但有时候会显示不全的bug，设置window.Resize
+	// 窗口将会自动达到图片原图尺寸大小，但有时候会显示不全的bug，设置window.Resize.Height
 	wechatimage.FillMode = canvas.ImageFillOriginal
 	alipayimage.FillMode = canvas.ImageFillOriginal
 	box := container.NewVBox(widget.NewLabel("微信扫一扫"), wechatimage, widget.NewLabel("支付宝扫一扫"), alipayimage)
