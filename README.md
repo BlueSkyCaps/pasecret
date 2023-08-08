@@ -17,8 +17,10 @@ Pasecret支持设置启动开锁密码，并且提供了中文和英文本地化
 <img src="assets/readme/gitshow1.jpeg" alt="">
 <img src="assets/readme/gitshow5.jpeg" alt="">
 <img src="assets/readme/gitshow6.jpeg" alt="">
-<img src="assets/readme/gitshow7.jpeg" alt="">
-<img src="assets/readme/gitshow8.jpeg" alt="">
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="assets/readme/gitshow7.jpeg" alt="" style="max-width: 50%; margin: 10px;">
+    <img src="assets/readme/gitshow8.jpeg" alt="" style="max-width: 50%; margin: 10px;">
+</div>
 <img src="assets/readme/gitshow2.jpeg" alt="">
 </div>
 
