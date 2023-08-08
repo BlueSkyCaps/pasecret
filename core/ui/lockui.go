@@ -78,12 +78,12 @@ func enterNumberBtnHandler(i string) {
 	currentValidNumbs = currentValidNumbs + i
 	// 若点击了第四次，则进行验证
 	if len(currentValidNumbs) == 4 {
-		lockPwd, err := common.DecryptAES([]byte(common.AppProductKeyAES), preferences.GetPreferenceByLockPwd())
+		lockPwdPure, err := common.DecryptAES([]byte(common.AppProductKeyAES), preferences.GetPreferenceByLockPwd())
 		if err != nil {
 			dialog.ShowError(err, storagedata.AppRef.LockWin)
 			return
 		}
-		if lockPwd == currentValidNumbs {
+		if currentValidNumbs == lockPwdPure {
 			if !fyne.CurrentDevice().IsMobile() {
 				storagedata.AppRef.W.Show()
 				storagedata.AppRef.LockWin.Close()

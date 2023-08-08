@@ -227,6 +227,7 @@ func deleteCategoryRelated(delCi Category) {
 
 // SearchByKeywordTo 按关键词搜索密码项，返回新的LoadedItems副本供部件展示
 func SearchByKeywordTo(kw string) []common.SearchDataResultViewModel {
+	kw = strings.ToLower(kw)
 	var vm []common.SearchDataResultViewModel
 	for _, d := range AppRef.LoadedItems.Data {
 		if strings.Contains(strings.ToLower(d.Name), kw) || strings.Contains(strings.ToLower(d.Remark), kw) ||
