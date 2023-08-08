@@ -3,7 +3,9 @@ package ui
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"pasecret/core/common"
 	"pasecret/core/pi18n"
 	"pasecret/core/preferences"
 	"pasecret/core/storagedata"
@@ -76,15 +78,19 @@ func enterNumberBtnHandler(i string) {
 	currentValidNumbs = currentValidNumbs + i
 	// 若点击了第四次，则进行验证
 	if len(currentValidNumbs) == 4 {
-		lockpw := preferences.GetPreferenceByLockPwd()
-		if lockpw == currentValidNumbs {
+		lockPwd, err := common.DecryptAES([]byte(common.AppProductKeyAES), preferences.GetPreferenceByLockPwd())
+		if err != nil {
+			dialog.ShowError(err, storagedata.AppRef.LockWin)
+			return
+		}
+		if lockPwd == currentValidNumbs {
 			if !fyne.CurrentDevice().IsMobile() {
 				storagedata.AppRef.W.Show()
 				storagedata.AppRef.LockWin.Close()
 			} else {
 				// 安卓端必须隐藏窗口来代替Close关闭窗口，因为Close会递归引发SetOnClosed事件
 				storagedata.AppRef.LockWin.Hide()
-				// 充值本次窗口回调，再关闭窗口，不会引起原事件
+				// 重置本次窗口回调，再关闭窗口，不会引起原事件
 				storagedata.AppRef.LockWin.SetOnClosed(func() {
 				})
 				storagedata.AppRef.LockWin.Close()

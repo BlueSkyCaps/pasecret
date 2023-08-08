@@ -210,7 +210,13 @@ func lockPwdBthCallBack() {
 		dialog.ShowConfirm(pi18n.LocalizedText("dialogShowInformationTitle", nil),
 			pi18n.LocalizedText("lockPwdSetTipShowConfirm", nil), func(b bool) {
 				if b {
-					preferences.SetPreference("LockPwd", pwdEntry.Text)
+					// 加密启动密码并存储首选项
+					aesPwd, err := common.EncryptAES([]byte(common.AppProductKeyAES), pwdEntry.Text)
+					if err != nil {
+						dialog.ShowError(err, window)
+						return
+					}
+					preferences.SetPreference("LockPwd", aesPwd)
 					dialog.ShowInformation(pi18n.LocalizedText("dialogShowInformationTitle", nil),
 						pi18n.LocalizedText("lockPwdSetTipDoneInformation", nil), window)
 					go func() {
