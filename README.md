@@ -12,12 +12,12 @@ The data is encrypted and can be used without any remote transmission. <br>Pasec
 数据采用加密算法，并且可以断网使用，不会进行任何远程传输。<br>
 Pasecret支持设置启动开锁密码，并且提供了中文和英文本地化支持。</p>
 <div style="text-align: center" >
-<img src="assets/readme/gitshow3.jpeg" alt="">
-<img src="assets/readme/gitshow4.jpeg" alt="">
-<img src="assets/readme/gitshow1.jpeg" alt="">
-<img src="assets/readme/gitshow6.jpeg" alt="">
-<img src="assets/readme/gitshow5.jpeg" alt="" width="250"><img src="assets/readme/gitshow7.jpeg" alt=""  width="250"><img src="assets/readme/gitshow8.jpeg" alt="" width="250">
-<img src="assets/readme/gitshow2.jpeg" alt="">
+<img src="./assets/readme/gitshow3.jpeg" alt="">
+<img src="./assets/readme/gitshow4.jpeg" alt="">
+<img src="./assets/readme/gitshow1.jpeg" alt="">
+<img src="./assets/readme/gitshow6.jpeg" alt="">
+<img src="./assets/readme/gitshow5.jpeg" alt="" width="250"><img src="./assets/readme/gitshow7.jpeg" alt=""  width="250"><img src="./assets/readme/gitshow8.jpeg" alt="" width="250">
+<img src="./assets/readme/gitshow2.jpeg" alt="">
 </div>
 
 
