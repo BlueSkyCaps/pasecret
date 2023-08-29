@@ -1,0 +1,53 @@
+{
+  "global_config": {
+    "sync_branch": 0
+  },
+  "category": [
+    {
+      "name": "证件",
+      "alias": "Identity Documents|ID Card, Driver's License, Passport..",
+      "description": "身份证、护照等居民证件",
+      "id": "0-built-in-cannot-be-removed",
+      "rank": 0,
+      "removable": false,
+      "renameable": false
+    },
+    {
+      "name": "银行卡",
+      "alias": "Bank cards|Debit cards, credit cards, etc",
+      "description": "银行类的储蓄卡、信用卡等",
+      "id": "1-built-in-cannot-be-removed",
+      "rank": 1,
+      "removable": false,
+      "renameable": false
+    },
+    {
+      "name": "Web网站",
+      "alias": "Websites|Websites that require username and password",
+      "description": "需要用户名和密码的网站",
+      "id": "2-built-in-cannot-be-removed",
+      "rank": 2,
+      "removable": false,
+      "renameable": false
+    },
+    {
+      "name": "应用程序",
+      "alias": "Software|Applications that require username and password",
+      "description": "需要用户名和密码的应用程序",
+      "id": "3-built-in-can-removed",
+      "rank": 3,
+      "removable": true,
+      "renameable": true
+    },
+    {
+      "name": "其余",
+      "alias": "Other|Account information that is not yet categorized",
+      "description": "暂未归类的账户信息",
+      "id": "4-built-in-can-removed",
+      "rank": 4,
+      "removable": true,
+      "renameable": true
+    }
+  ],
+  "data": []
+}
