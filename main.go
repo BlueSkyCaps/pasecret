@@ -28,8 +28,9 @@ func init() {
 }
 
 func main() {
-	// resource data was bundled by fyne, and it's too long bytes so goland cant analyze immediately
+	// 先初始化本地语言环境
 	pi18n.Local12Init(resourceAssetsI18nPasecretZhToml, resourceAssetsI18nPasecretEnToml)
+	// 初始化本地存储库 必须再语言本地化Local12Init()后面调用
 	storagedata.LoadInit(resourceDJson.StaticContent)
 	uIHandler()
 }

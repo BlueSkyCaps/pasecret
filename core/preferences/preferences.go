@@ -30,7 +30,17 @@ func GetPreferenceByLocalLang() string {
 }
 
 func PreferenceInit() {
+	existed := common.Existed(storagedata.AppRef.A.Storage().RootURI().Path())
+	// 若RootURI目录不存在，则先创建目录（目前是在Android端必须先创建，因为不存在/data/user/0/top.reminisce.xxx/files/fyne）
+	if !existed {
+		r, err := common.CreateDir(storagedata.AppRef.A.Storage().RootURI().Path())
+		if !r {
+			dialog.NewInformation("err", "storage loadInit, MkdirAll:"+err.Error(), storagedata.AppRef.W).Show()
+			return
+		}
+	}
 	preferencePath = path.Join(storagedata.AppRef.A.Storage().RootURI().Path(), "preference.json")
+
 	// 不存在首选项文件，则创建
 	if !common.Existed(preferencePath) {
 		initPre := Preferences{}
