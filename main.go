@@ -14,7 +14,7 @@ import (
 func init() {
 	storagedata.AppRef.A = app.NewWithID("top.reminisce.pasecret")
 	t := &config.DefaultGlobalSettingTheme{}
-	t.SetFonts("WenQuanWeiMiHei.ttf", resourceFontWenQuanWeiMiHeiTtf.StaticContent)
+	t.SetFonts("WenQuanWeiMiHei.ttf", resourceFontWenQuanWeiMiHeiTtf)
 	// 更新主题，让fyne使用自定义主题配置
 	storagedata.AppRef.A.Settings().SetTheme(t)
 	storagedata.AppRef.W = storagedata.AppRef.A.NewWindow("Pasecret")
