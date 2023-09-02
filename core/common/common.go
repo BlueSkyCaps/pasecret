@@ -121,7 +121,7 @@ type SearchDataResultViewModel struct {
 var ShowSearchResultCeilWH_ = "xxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx"
 var DonateAliPayUri_ = "http://sto.reminisce.top/OTHER/donate/alipay.jpg"
 var DonateWechatUri_ = "http://sto.reminisce.top/OTHER/donate/wechat.jpg"
-var AppLinkUri_ = "https://apps.reminisce.top/pasecret"
+var AppLinkUri_ = "https://apps.reminisce.top/home/pasecret.html"
 var GithubUri = "https://github.com/BlueSkyCaps/pasecret"
 var BlogUri = "https://www.reminisce.top/"
 
