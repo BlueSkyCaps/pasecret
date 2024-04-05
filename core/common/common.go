@@ -119,8 +119,8 @@ type SearchDataResultViewModel struct {
 // ShowSearchResultCeilWH_ 用于设置关键字搜索密码项展示table的单元格长度。
 //单元格宽高度可以由此填充字符定义，不要使用canvas.Text无法文本换行，不建议使用SetColumnWidth等设置宽高
 var ShowSearchResultCeilWH_ = "xxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxx"
-var DonateAliPayUri_ = "http://sto.reminisce.top/OTHER/donate/alipay.jpg"
-var DonateWechatUri_ = "http://sto.reminisce.top/OTHER/donate/wechat.jpg"
+var DonateAliPayUri_ = "https://apps.reminisce.top/home/static/img/other/donate/alipay.png"
+var DonateWechatUri_ = "https://apps.reminisce.top/home/static/img/other/donate/wechat.png"
 var AppLinkUri_ = "https://apps.reminisce.top/home/pasecret.html"
 var GithubUri = "https://github.com/BlueSkyCaps/pasecret"
 var BlogUri = "https://www.reminisce.top/"
