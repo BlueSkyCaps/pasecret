@@ -4,7 +4,17 @@
 fyne package -os android -appID top.reminisce.pasecret -name Pasecret -icon ./assets/logo.png -appVersion 1.0
 
 // 打包成当前系统可执行文件，如exe：
-fyne install -icon ./assets/logo.png -appVersion 1.0
+fyne install
+// 若打包未生成文件，请指定尝试如：
+fyne package -os linux
+// >>>> 以上将检索根目录的FyneApp.toml来生成配置文件：
+[Details]
+  Icon = "assets/logo.png"
+  Name = "Pasecret"
+  ID = "top.reminisce.pasecret"
+  Version = "2.1"
+  Build = 12
+
 
 // 捆绑资源文件：
 fyne bundle -o bundled.go ./assets/font/STXINWEI.TTF
